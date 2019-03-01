@@ -22,6 +22,12 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.x_ctrl = 1;
         this.y_ctrl = 1;
 
+        // It may be better to specify control over specific directions
+        this.left_ctrl = 1;
+        this.right_ctrl = 1;
+        this.up_ctrl = 1;
+        this.down_ctrl = 1;
+
         // At the beginning of our program, load one of each of these shape
         // definitions onto the GPU.  NOTE:  Only do this ONCE per shape
         // design.  Once you've told the GPU what the design of a cube is,
@@ -86,27 +92,11 @@ class Assignment_Two_Skeleton extends Scene_Component {
         });
         this.new_line();this.new_line();
         this.control_panel.innerHTML += "Move the ball using the following buttons:<br>";
-        this.key_triggered_button("Move ball left", ["j"], ()=>this.x_vel = -10 * this.x_ctrl, undefined, ()=>this.x_vel = 0);
-        this.key_triggered_button("Move ball right", ["l"], ()=>this.x_vel = 10 * this.x_ctrl, undefined, ()=>this.x_vel = 0);
+        this.key_triggered_button("Move ball left", ["j"], ()=>this.x_vel = -10 * this.left_ctrl, undefined, ()=>this.x_vel = 0);
+        this.key_triggered_button("Move ball right", ["l"], ()=>this.x_vel = 10 * this.right_ctrl, undefined, ()=>this.x_vel = 0);
         this.new_line();
-        this.key_triggered_button("Move ball up", ["i"], ()=>this.y_vel = 10 * this.y_ctrl, undefined, ()=>this.y_vel = 0);
-        this.key_triggered_button("Move ball down", ["k"], ()=>this.y_vel = -10 * this.y_ctrl, undefined, ()=>this.y_vel = 0);
-
-//         this.key_triggered_button("Move ball left", ["4"], () => {
-//             this.move_l = !this.move_l;
-//         });
-
-//         this.key_triggered_button("Move ball right", ["6"], () => {
-//             this.move_r = !this.move_r;
-//         });
-
-//         this.key_triggered_button("Move ball up", ["8"], () => {
-//             this.move_u = !this.move_u;
-//         });
-        
-//         this.key_triggered_button("Move ball down", ["2"], () => {
-//             this.move_d = !this.move_d;
-//         });
+        this.key_triggered_button("Move ball up", ["i"], ()=>this.y_vel = 10 * this.up_ctrl, undefined, ()=>this.y_vel = 0);
+        this.key_triggered_button("Move ball down", ["k"], ()=>this.y_vel = -10 * this.down_ctrl, undefined, ()=>this.y_vel = 0);
 
     }
 
@@ -120,16 +110,59 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.t += graphics_state.animation_delta_time / 1000;
         const t = this.t;
 
-        // Draw some demo textured shapes
-//         let spacing = 6;
-//         let m = Mat4.translation(Vec.of(-1 * (spacing / 2) * (this.shape_count - 1), 0, 0));
-//         for (let k in this.shapes) {
-//             this.shapes[k].draw(
-//                 graphics_state,
-//                 m.times(Mat4.rotation(t, Vec.of(0, 1, 0))),
-//                 this.shape_materials[k] || this.plastic);
-//             m = m.times(Mat4.translation(Vec.of(spacing, 0, 0)));
-//         }
+        // JSON of coordinates of each object
+        const object_coords = {
+
+            box1_coords: {
+                x: 0,
+                y: 12,
+                margin_x: 2,
+                margin_y: 2
+            },
+
+            box2_coords: {
+                x: -13,
+                y: 4,
+                margin_x: 2,
+                margin_y: 2
+            },
+
+            box3_coords: {
+                x: 5,
+                y: -5,
+                margin_x: 2,
+                margin_y: 2,
+            }
+        };
+
+        // Compare the ball's current coordinates with those of the inanimate objects
+        // If the ball is touching one of the inanimate objects, then the ball cannot move
+        // through that object
+        var check_left = 1;
+        var check_right = 1;
+        var check_up = 1;
+        var check_down = 1;
+        for(var obj in object_coords) {
+            if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x)) {            
+                if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= object_coords[obj].y)
+                    check_up = false;
+
+                if(this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y) && this.y_coord >= object_coords[obj].y)
+                    check_down = false;
+            }
+
+            if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y)) {
+                if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= object_coords[obj].x)
+                    check_right = false;
+
+                if(this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x) && this.x_coord >= object_coords[obj].x)
+                    check_left = false;
+            }
+        }
+        this.left_ctrl = check_left;
+        this.right_ctrl = check_right;
+        this.up_ctrl = check_up;
+        this.down_ctrl = check_down;
 
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
@@ -159,12 +192,12 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(0, 12, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5))), this.plastic);
 
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(-13, 4, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box2_coords.x, object_coords.box2_coords.y, 1.5))), this.plastic);
 
         for (var i = 0; i < 12; ++i)
         {
@@ -174,39 +207,13 @@ class Assignment_Two_Skeleton extends Scene_Component {
                     .times(Mat4.translation(Vec.of(12, -21 + (i*2), 1.5))), this.plastic);
         }
 
-
-        // Draw a ball and make it move around
-        // Add texture?
-
-        //let a = this.move_l;
-//         let b = this.move_r;
-//         let c = this.move_u;
-//         let d = this.move_d;
-
-        //if (a) { this.x_coord -= 0.2; this.move_l = !this.move_l; }
-//         if (b) { this.x_coord += 0.2; this.move_r = !this.move_r; }
-//         if (c) { this.y_coord += 0.2; this.move_u = !this.move_u; }
-//         if (d) { this.y_coord -= 0.2; this.move_d = !this.move_d; }
-
-//         else 
-//         {
-//             this.shapes.ball.draw(graphics_state, 
-//                 Mat4.identity()
-//                     .times(Mat4.scale(2))
-//                     .times(Mat4.translation(Vec.of(x_coord, 0, 1.5))),
-//                     this.plastic);
-//         }
-
         this.shapes.ball.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
                     .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, 1.5))),
                     this.plastic);
 
-
-
-        // And because why not, LET'S ADD A TREE AT THE CENTER
-        // Let's make it PINK BECAUSE I DON'T KNOW HOW TO CHANGE THESE DANG PLASTIC COLORS
+        // tree
         this.draw_tree(graphics_state,
             Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
                            .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
@@ -214,15 +221,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(5, -5, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5))), this.plastic);
 
     }
-
-
-
-
-
-
 
     draw_tree(graphics_state, m) {
         // Code from a sample on CCLE
@@ -241,9 +242,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 m,
                 this.plastic);
         }
-//         this.shapes.simplebox.draw(graphics_state,
-//             m = m.times(Mat4.translation(Vec.of(0, 2, 0))),
-//             this.plastic);
         
         // Keep translation coordinates of bushy tree stuff
         let temp_m = [ m.times(Mat4.translation(Vec.of(-2, 0, 0))),
