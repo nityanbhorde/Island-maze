@@ -145,10 +145,11 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
         // through that object
-        var check_left = 1;
+        
+        /*var check_left = 1;
         var check_right = 1;
         var check_up = 1;
-        var check_down = 1;
+        var check_down = 1;*/
         for(var obj in object_coords) {
             if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x)) {            
                 if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= object_coords[obj].y) {
@@ -174,10 +175,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
             }
         }
-        //this.left_ctrl = check_left;
-        //this.right_ctrl = check_right;
-        //this.up_ctrl = check_up;
-        //this.down_ctrl = check_down;
+        /*this.left_ctrl = check_left;
+        this.right_ctrl = check_right;
+        this.up_ctrl = check_up;
+        this.down_ctrl = check_down;*/
 
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
@@ -257,7 +258,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 .times(Mat4.scale(2))
                 .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5))), this.plastic);
                 
-        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 50, this.z_coord + 50), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 1, 0));
+        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 50, this.z_coord + 50), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
 
     draw_tree(graphics_state, m) {
