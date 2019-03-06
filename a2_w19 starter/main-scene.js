@@ -183,19 +183,13 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
         
-        // Acceleration
-        if (this.left_ctrl) this.x_vel += (-10 * this.left_ctrl + this.x_acc) * delta_time;
-        if (this.right_ctrl) this.x_vel += (10 * this.right_ctrl + this.x_acc) * delta_time;
-        if (this.up_ctrl) this.y_vel += (10 * this.up_ctrl + this.y_acc) * delta_time;
-        if (this.down_ctrl) this.y_vel += (-10 * this.down_ctrl + this.y_acc) * delta_time;
-        
-        // Maximum velocity
-        if (Math.abs(this.x_vel) > 10) { 
-            this.x_acc = (10 - Math.sign(this.x_vel)) / 10;
-        }
-        if (Math.abs(this.y_vel) > 10) { 
-            this.y_acc = (10 - Math.sign(this.y_vel)) / 10;
-        }
+        // Acceleration with maximum velocity for controls
+        if (this.left_ctrl && this.x_vel > -10) this.x_vel += -10 * this.left_ctrl * delta_time;
+        if (this.right_ctrl && this.x_vel < 10) this.x_vel += 10 * this.right_ctrl * delta_time;
+        if (this.up_ctrl && this.y_vel < 10)    this.y_vel += 10 * this.up_ctrl * delta_time;
+        if (this.down_ctrl && this.y_vel > -10) this.y_vel += -10 * this.down_ctrl * delta_time;
+        this.x_vel += this.x_acc * delta_time;
+        this.y_vel += this.y_acc + delta_time;
         
         // Friction
         this.x_vel *= 0.99;
