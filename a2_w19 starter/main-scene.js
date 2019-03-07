@@ -9,7 +9,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Locate the camera here (inverted matrix).
         const r = context.width / context.height;
-        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 1, 0));
+        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 0, 1));
         context.globals.graphics_state.projection_transform = Mat4.perspective(Math.PI / 4, r, .1, 1000);
 
         // Global ball coordinates (and velocity)
