@@ -257,7 +257,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
     draw_tree(graphics_state, m) {
         // Code from a sample on CCLE
-        const deg = 0.2* Math.sin(this.t*2);
+        const deg = 0.2 * Math.sin(this.t*2);
         this.shapes.simplebox.draw(
             graphics_state,
             m,
