@@ -108,6 +108,39 @@ class Assignment_Two_Skeleton extends Scene_Component {
     }
 
 
+    // Determine closest point on a given object to a point on the ball
+    squaredDistBallObject(obj_coords) {
+
+        this.check = (pn, bmin, bmax) => {
+            var out = 0;            
+            var v = pn;
+
+            if(v < bmin) {
+                var val = (bmin - v);
+                out += val*val;
+            }
+            if(v > bmax) {
+                var val = (v - bmax);
+                out += val*val;
+            }
+            return out;
+        }
+
+        var square = 0.0;
+
+        square += this.check(this.x_coord, obj_coords.x - obj_coords.margin_x/2, obj_coords.x + obj_coords.margin_x/2);
+        square += this.check(this.y_coord, obj_coords.y - obj_coords.margin_y/2, obj_coords.y + obj_coords.margin_y/2);
+        
+        return square;
+    }
+
+    // Check whether a given object would intersect with the ball
+    checkBallIntersect(obj_coords) {
+        const squaredDist = this.squaredDistBallObject(obj_coords);
+        return squaredDist <= 1;
+    }
+
+
     display(graphics_state) {
         // Use the lights stored in this.lights.
         graphics_state.lights = this.lights;
@@ -123,7 +156,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             box1_coords: {
                 x: 0,
                 y: 12,
-                margin_x: 2,
+                margin_x: 4,
                 margin_y: 2
             },
 
@@ -145,40 +178,38 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
         // through that object
-        
-        /*var check_left = 1;
-        var check_right = 1;
-        var check_up = 1;
-        var check_down = 1;*/
         for(var obj in object_coords) {
-            if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x)) {            
-                if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= object_coords[obj].y) {
-                    this.y_vel *= -1;
-                    //check_up = false;
-                }
+            if(this.checkBallIntersect(object_coords[obj])) {
 
-                if(this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y) && this.y_coord >= object_coords[obj].y) {
-                    this.y_vel *= -1;
-                    //check_down = false;
-                }
-            }
+                const dx = (this.x_coord - object_coords[obj].x);
+                const dy = (this.y_coord - object_coords[obj].y);
 
-            if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y)) {
-                if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= object_coords[obj].x) {
+                var theta = Math.atan2(dy,dx)*(180/Math.PI);
+
+                // will be used to deal with rectangular objects
+                const x_scale = object_coords[obj].margin_x/object_coords[obj].margin_y;
+                const y_scale = object_coords[obj].margin_y/object_coords[obj].margin_x;
+                
+                // if the ball hits right face
+                if(theta > -45*y_scale && theta < 45*y_scale) {
                     this.x_vel *= -1;
-                    //check_right = false;
                 }
-
-                if(this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x) && this.x_coord >= object_coords[obj].x) {
+                else if(theta > 45*y_scale && theta < (45*y_scale + 90*x_scale)) {
+                    this.y_vel *= -1;
+                }
+                else if(theta < -45*y_scale && theta > (-45*y_scale - 90*x_scale)) {
+                    this.y_vel *= -1;
+                }
+                else if(theta < (-45*y_scale - 90*x_scale) || (45*y_scale + 90*x_scale)) {
                     this.x_vel *= -1;
-                    //check_left = false;
                 }
+                else {
+                    this.x_vel *= -1;
+                    this.y_vel *= -1;
+                }
+                    
             }
         }
-        /*this.left_ctrl = check_left;
-        this.right_ctrl = check_right;
-        this.up_ctrl = check_up;
-        this.down_ctrl = check_down;*/
 
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
@@ -189,7 +220,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         if (this.up_ctrl && this.y_vel < 10)    this.y_vel += 10 * this.up_ctrl * delta_time;
         if (this.down_ctrl && this.y_vel > -10) this.y_vel += -10 * this.down_ctrl * delta_time;
         this.x_vel += this.x_acc * delta_time;
-        this.y_vel += this.y_acc + delta_time;
+        this.y_vel += this.y_acc * delta_time;
         
         // Friction
         this.x_vel *= 0.99;
@@ -220,7 +251,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Draw a couple of completely random, useless boxes
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.scale(2))
+                .times(Mat4.scale(Vec.of(object_coords.box1_coords.margin_x, object_coords.box1_coords.margin_y , 2)))
                 .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5))), this.plastic);
 
         this.shapes.simplebox.draw(graphics_state, 
