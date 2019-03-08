@@ -9,24 +9,32 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Locate the camera here (inverted matrix).
         const r = context.width / context.height;
-        context.globals.graphics_state.camera_transform = Mat4.translation([0, 0, -135]);
+        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 0, 1));
         context.globals.graphics_state.projection_transform = Mat4.perspective(Math.PI / 4, r, .1, 1000);
 
         // Global ball coordinates (and velocity)
         this.x_coord = 0;
         this.y_coord = 0;
+        this.z_coord = 1.5;
+        
         this.x_vel = 0;
         this.y_vel = 0;
+        this.z_vel = 0;
+        
+        this.x_acc = 0;
+        this.y_acc = 0;
+        this.z_acc = 0;
+        
         // Does the user have control over movement in this axis?
         // They may not if the ball interacts with a spring, wall, etc.
-        this.x_ctrl = 1;
-        this.y_ctrl = 1;
+        this.x_ctrl = 0;
+        this.y_ctrl = 0;
 
         // It may be better to specify control over specific directions
-        this.left_ctrl = 1;
-        this.right_ctrl = 1;
-        this.up_ctrl = 1;
-        this.down_ctrl = 1;
+        this.left_ctrl = 0;
+        this.right_ctrl = 0;
+        this.up_ctrl = 0;
+        this.down_ctrl = 0;
 
         // At the beginning of our program, load one of each of these shape
         // definitions onto the GPU.  NOTE:  Only do this ONCE per shape
@@ -92,12 +100,11 @@ class Assignment_Two_Skeleton extends Scene_Component {
         });
         this.new_line();this.new_line();
         this.control_panel.innerHTML += "Move the ball using the following buttons:<br>";
-        this.key_triggered_button("Move ball left", ["j"], ()=>this.x_vel = -10 * this.left_ctrl, undefined, ()=>this.x_vel = 0);
-        this.key_triggered_button("Move ball right", ["l"], ()=>this.x_vel = 10 * this.right_ctrl, undefined, ()=>this.x_vel = 0);
+        this.key_triggered_button("Move ball left", ["j"], ()=>this.left_ctrl = 1, undefined, ()=>this.left_ctrl = 0);
+        this.key_triggered_button("Move ball right", ["l"], ()=>this.right_ctrl = 1, undefined, ()=>this.right_ctrl = 0);
         this.new_line();
-        this.key_triggered_button("Move ball up", ["i"], ()=>this.y_vel = 10 * this.up_ctrl, undefined, ()=>this.y_vel = 0);
-        this.key_triggered_button("Move ball down", ["k"], ()=>this.y_vel = -10 * this.down_ctrl, undefined, ()=>this.y_vel = 0);
-
+        this.key_triggered_button("Move ball up", ["i"], ()=>this.up_ctrl = 1, undefined, ()=>this.up_ctrl = 0);
+        this.key_triggered_button("Move ball down", ["k"], ()=>this.down_ctrl = 1, undefined, ()=>this.down_ctrl = 0);
     }
 
 
@@ -138,34 +145,57 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
         // through that object
-        var check_left = 1;
+        
+        /*var check_left = 1;
         var check_right = 1;
         var check_up = 1;
-        var check_down = 1;
+        var check_down = 1;*/
         for(var obj in object_coords) {
             if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x)) {            
-                if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= object_coords[obj].y)
-                    check_up = false;
+                if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= object_coords[obj].y) {
+                    this.y_vel *= -1;
+                    //check_up = false;
+                }
 
-                if(this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y) && this.y_coord >= object_coords[obj].y)
-                    check_down = false;
+                if(this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y) && this.y_coord >= object_coords[obj].y) {
+                    this.y_vel *= -1;
+                    //check_down = false;
+                }
             }
 
             if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y)) {
-                if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= object_coords[obj].x)
-                    check_right = false;
+                if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= object_coords[obj].x) {
+                    this.x_vel *= -1;
+                    //check_right = false;
+                }
 
-                if(this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x) && this.x_coord >= object_coords[obj].x)
-                    check_left = false;
+                if(this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x) && this.x_coord >= object_coords[obj].x) {
+                    this.x_vel *= -1;
+                    //check_left = false;
+                }
             }
         }
-        this.left_ctrl = check_left;
+        /*this.left_ctrl = check_left;
         this.right_ctrl = check_right;
         this.up_ctrl = check_up;
-        this.down_ctrl = check_down;
+        this.down_ctrl = check_down;*/
 
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
+        
+        // Acceleration with maximum velocity for controls
+        if (this.left_ctrl && this.x_vel > -10) this.x_vel += -10 * this.left_ctrl * delta_time;
+        if (this.right_ctrl && this.x_vel < 10) this.x_vel += 10 * this.right_ctrl * delta_time;
+        if (this.up_ctrl && this.y_vel < 10)    this.y_vel += 10 * this.up_ctrl * delta_time;
+        if (this.down_ctrl && this.y_vel > -10) this.y_vel += -10 * this.down_ctrl * delta_time;
+        this.x_vel += this.x_acc * delta_time;
+        this.y_vel += this.y_acc * delta_time;
+        
+        // Friction
+        this.x_vel *= 0.99;
+        this.y_vel *= 0.99;
+        
+        // Velocity
         this.x_coord += this.x_vel * delta_time;
         this.y_coord += this.y_vel * delta_time;
 
@@ -187,30 +217,29 @@ class Assignment_Two_Skeleton extends Scene_Component {
                     .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic);
         }
 
-        
         // Draw a couple of completely random, useless boxes
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, this.z_coord))), this.plastic);
 
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box2_coords.x, object_coords.box2_coords.y, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box2_coords.x, object_coords.box2_coords.y, this.z_coord))), this.plastic);
 
         for (var i = 0; i < 12; ++i)
         {
             this.shapes.simplebox.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(12, -21 + (i*2), 1.5))), this.plastic);
+                    .times(Mat4.translation(Vec.of(12, -21 + (i*2), this.z_coord))), this.plastic);
         }
 
         this.shapes.ball.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, 1.5))),
+                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))),
                     this.plastic);
 
         // tree
@@ -221,13 +250,14 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5))), this.plastic);
-
+                .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, this.z_coord))), this.plastic);
+                
+        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 50, this.z_coord + 50), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
 
     draw_tree(graphics_state, m) {
         // Code from a sample on CCLE
-        const deg = 0.2* Math.sin(this.t*2);
+        const deg = 0.2 * Math.sin(this.t*2);
         this.shapes.simplebox.draw(
             graphics_state,
             m,
