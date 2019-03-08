@@ -199,40 +199,59 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
 //                col = this.blue;
 
+                // calculate bearing angle between ball and object (where 0 is defined as East)
                 const dx = (this.x_coord - object_coords[obj].x/2);
                 const dy = (this.y_coord - object_coords[obj].y/2);
+                var theta = (Math.atan2(dy,dx))*(180/Math.PI);
 
-                var theta = (Math.atan2(dy,dx) + object_coords[obj].rotation)*(180/Math.PI);
+                // range of bearing angles of each face
+                // use to determine which face the ball hits
+                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x)  + object_coords[obj].rotation)*(180/Math.PI);
+                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y)  + object_coords[obj].rotation)*(180/Math.PI);
 
-                // angular range of each face
-                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x))*(180/Math.PI);
-                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
+                // determine the angle of direction of the ball
+                const kappa = 1e-1;
+                const phi = Math.atan(this.y_vel/(this.x_vel+kappa));
+                console.log("cont");
                 
                  this.x_vel *= -1;
                  this.y_vel *= -1;
 
+//                 var faceAngle;
+//                 var impactAngle;
 //                 if(theta > -y_angle && theta < y_angle) {
-//                     this.x_vel *= -1;
-//                     console.log("a");
+//                     faceAngle = 90 - object_coords[obj].rotation;
+// //                    impactAngle = faceAngle + phi;
+
+//                     this.x_vel = -this.x_vel * Math.sin(faceAngle);
+//                     this.y_vel = this.y_vel * Math.sin(faceAngle);
 //                 }
 //                 // if the ball hits top face
 //                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-//                     this.y_vel *= -1;
-//                     console.log("b");
+//                     faceAngle = object_coords[obj].rotation;
+//                     impactAngle = faceAngle + phi;
+
+//                     this.x_vel = this.x_vel * Math.cos(faceAngle);
+//                     this.y_vel = -this.y_vel * Math.cos(faceAngle);
 //                 }
 //                 // etc.
 //                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-//                     this.y_vel *= -1;
-//                     console.log("c");
+//                     faceAngle = 90 - object_coords[obj].rotation;
+//                     impactAngle = faceAngle + phi;
+
+//                     this.x_vel = -this.x_vel * Math.sin(faceAngle);
+//                     this.y_vel = this.y_vel * Math.sin(faceAngle);
 //                 }
 //                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {
-//                     this.x_vel *= -1;
-//                     console.log("d");
+//                     faceAngle = object_coords[obj].rotation;
+//                     impactAngle = faceAngle + phi;
+
+//                     this.x_vel = this.x_vel * Math.cos(faceAngle);
+//                     this.y_vel = -this.y_vel * Math.cos(faceAngle);
 //                 }
 //                 else {
 //                     this.x_vel *= -1;
 //                     this.y_vel *= -1;
-//                     console.log("e");
 //                 }
             }
         }
