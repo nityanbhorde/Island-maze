@@ -131,8 +131,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
         else
             closest_y = y_unrotated;
 
-        var square = 0.0;
-
         const a = Math.abs(x_unrotated - closest_x);
         const b = Math.abs(y_unrotated - closest_y);
  
@@ -197,36 +195,39 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 const dx = (this.x_coord - object_coords[obj].x/2);
                 const dy = (this.y_coord - object_coords[obj].y/2);
 
-                var theta = Math.atan2(dy,dx)*(180/Math.PI);
+                var theta = (Math.atan2(dy,dx) + object_coords[obj].rotation)*(180/Math.PI);
 
                 // angular range of each face
-                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x) - object_coords[obj].rotation)*(180/Math.PI);
-                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y) - object_coords[obj].rotation)*(180/Math.PI);
+                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x))*(180/Math.PI);
+                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
                 
+                const temp = this.x_vel;
+                this.x_vel = -this.y_vel;
+                this.y_vel = -temp;
 
-                // if the ball hits right face
 //                 if(theta > -y_angle && theta < y_angle) {
 //                     this.x_vel *= -1;
-// //                    console.log("right");
+//                     console.log("a");
 //                 }
 //                 // if the ball hits top face
 //                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
 //                     this.y_vel *= -1;
-// //                    console.log("top");
+//                     console.log("b");
 //                 }
 //                 // etc.
 //                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
 //                     this.y_vel *= -1;
-// //                    console.log("bottom");
+//                     console.log("c");
 //                 }
 //                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {
 //                     this.x_vel *= -1;
-// //                    console.log("left");
+//                     console.log("d");
 //                 }
 //                 else {
-                    this.x_vel *= -1;
-                    this.y_vel *= -1;
-//                }
+//                     this.x_vel *= -1;
+//                     this.y_vel *= -1;
+//                     console.log("e");
+//                 }
             }
         }
 
