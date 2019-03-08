@@ -128,8 +128,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         var square = 0.0;
 
-        square += this.check(this.x_coord, obj_coords.x - obj_coords.margin_x/2, obj_coords.x + obj_coords.margin_x/2);
-        square += this.check(this.y_coord, obj_coords.y - obj_coords.margin_y/2, obj_coords.y + obj_coords.margin_y/2);
+        square += this.check(this.x_coord, obj_coords.x/2 - obj_coords.margin_x/2, obj_coords.x/2 + obj_coords.margin_x/2);
+        square += this.check(this.y_coord, obj_coords.y/2 - obj_coords.margin_y/2, obj_coords.y/2 + obj_coords.margin_y/2);
         
         return square;
     }
@@ -154,14 +154,14 @@ class Assignment_Two_Skeleton extends Scene_Component {
         const object_coords = {
 
             box1_coords: {
-                x: 0,
-                y: 12,
-                margin_x: 4,
-                margin_y: 2
+                x: 10,
+                y: 20,
+                margin_x: 5,
+                margin_y: 5
             },
 
             box2_coords: {
-                x: -13,
+                x: -15,
                 y: 4,
                 margin_x: 2,
                 margin_y: 2
@@ -171,9 +171,11 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 x: 5,
                 y: -5,
                 margin_x: 2,
-                margin_y: 2,
+                margin_y: 2
             }
         };
+
+//       console.log("x: ", this.x_coord, "y: ", this.y_coord);
 
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
@@ -181,33 +183,40 @@ class Assignment_Two_Skeleton extends Scene_Component {
         for(var obj in object_coords) {
             if(this.checkBallIntersect(object_coords[obj])) {
 
-                const dx = (this.x_coord - object_coords[obj].x);
-                const dy = (this.y_coord - object_coords[obj].y);
+                const dx = (this.x_coord - object_coords[obj].x/2);
+                const dy = (this.y_coord - object_coords[obj].y/2);
 
                 var theta = Math.atan2(dy,dx)*(180/Math.PI);
 
-                // will be used to deal with rectangular objects
-                const x_scale = object_coords[obj].margin_x/object_coords[obj].margin_y;
-                const y_scale = object_coords[obj].margin_y/object_coords[obj].margin_x;
+                // angular range of each face
+                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x))*(180/Math.PI);
+                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
                 
+                console.log("y_angle ", y_angle);
+
                 // if the ball hits right face
-                if(theta > -45*y_scale && theta < 45*y_scale) {
+                if(theta > -y_angle && theta < y_angle) {
                     this.x_vel *= -1;
+                    console.log("right");
                 }
-                else if(theta > 45*y_scale && theta < (45*y_scale + 90*x_scale)) {
+                // if the ball hits top face
+                else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
                     this.y_vel *= -1;
+                    console.log("top");
                 }
-                else if(theta < -45*y_scale && theta > (-45*y_scale - 90*x_scale)) {
+                // etc.
+                else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
                     this.y_vel *= -1;
+                    console.log(theta);
+                    console.log("bottom");
                 }
-                else if(theta < (-45*y_scale - 90*x_scale) || (45*y_scale + 90*x_scale)) {
+                else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {
                     this.x_vel *= -1;
                 }
                 else {
                     this.x_vel *= -1;
                     this.y_vel *= -1;
                 }
-                    
             }
         }
 
@@ -251,13 +260,15 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Draw a couple of completely random, useless boxes
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.scale(Vec.of(object_coords.box1_coords.margin_x, object_coords.box1_coords.margin_y , 2)))
-                .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5)))
+                .times(Mat4.scale(Vec.of(object_coords.box1_coords.margin_x, object_coords.box1_coords.margin_y, 2)))
+                , this.plastic);
 
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box2_coords.x, object_coords.box2_coords.y, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box2_coords.x, object_coords.box2_coords.y, 1.5)))
+                .times(Mat4.scale(Vec.of(object_coords.box2_coords.margin_x, object_coords.box2_coords.margin_y, 2)))
+                , this.plastic);
 
         for (var i = 0; i < 12; ++i)
         {
@@ -280,8 +291,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
                            .times(Mat4.translation(Vec.of(10, 4, 10))));
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5))), this.plastic);
+                .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5)))
+                .times(Mat4.scale(Vec.of(object_coords.box3_coords.margin_x, object_coords.box3_coords.margin_y, 2)))
+                , this.plastic);
                 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 50, this.z_coord + 50), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
