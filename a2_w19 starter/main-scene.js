@@ -30,6 +30,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.x_ctrl = 0;
         this.y_ctrl = 0;
 
+        // testing purposes
+        this.blue = Color.of(0, 0, 1, 1);
+        this.yellow = Color.of(1, 1, 0, 1);
+
         // It may be better to specify control over specific directions
         this.left_ctrl = 0;
         this.right_ctrl = 0;
@@ -62,7 +66,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             diffusivity: .4
         });
         this.plastic = this.clay.override({
-            specularity: .6
+            specularity: .6,            
         });
         this.texture_base = context.get_instance(Phong_Shader).material(Color.of(0, 0, 0, 1), {
             ambient: 1,
@@ -111,8 +115,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
     // Determine closest point on a given object to a point on the ball
     squaredDistBallObject(obj_coords) {
         
-        const x_unrotated = Math.cos(obj_coords.rotation) * (this.x_coord - obj_coords.x/2) - Math.sin(obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.x/2;
-        const y_unrotated = Math.sin(obj_coords.rotation) * (this.x_coord - obj_coords.x/2) + Math.cos(obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.y/2;
+        const x_unrotated = Math.cos(-obj_coords.rotation) * (this.x_coord - obj_coords.x/2) - Math.sin(-obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.x/2;
+        const y_unrotated = Math.sin(-obj_coords.rotation) * (this.x_coord - obj_coords.x/2) + Math.cos(-obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.y/2;
 
         var closest_x = 0;
         var closest_y = 0;
@@ -160,9 +164,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
             box1_coords: {
                 x: 10,
                 y: 20,
-                margin_x: 5,
-                margin_y: 5,
-                rotation: Math.PI/4,
+                margin_x: 7,
+                margin_y: 3,
+                rotation: Math.PI/3,
             },
 
             box2_coords: {
@@ -187,10 +191,13 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
         // through that object
+
+        var col = this.yellow;
+
         for(var obj in object_coords) {
             if(this.checkBallIntersect(object_coords[obj])) {
 
-                console.log("collide");
+//                col = this.blue;
 
                 const dx = (this.x_coord - object_coords[obj].x/2);
                 const dy = (this.y_coord - object_coords[obj].y/2);
@@ -201,8 +208,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x))*(180/Math.PI);
                 const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
                 
-                this.x_vel *= -1;
-                this.y_vel *= -1;
+                 this.x_vel *= -1;
+                 this.y_vel *= -1;
 
 //                 if(theta > -y_angle && theta < y_angle) {
 //                     this.x_vel *= -1;
@@ -281,25 +288,25 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 .times(Mat4.scale(Vec.of(object_coords.box2_coords.margin_x, object_coords.box2_coords.margin_y, 2)))
                 , this.plastic);
 
-        for (var i = 0; i < 12; ++i)
-        {
-            this.shapes.simplebox.draw(graphics_state, 
-                Mat4.identity()
-                    .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(12, -21 + (i*2), 1.5))), this.plastic);
-        }
+//         for (var i = 0; i < 12; ++i)
+//         {
+//             this.shapes.simplebox.draw(graphics_state, 
+//                 Mat4.identity()
+//                     .times(Mat4.scale(2))
+//                     .times(Mat4.translation(Vec.of(12, -21 + (i*2), 1.5))), this.plastic);
+//         }
 
         this.shapes.ball.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
                     .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, 1.5))),
-                    this.plastic);
+                    this.plastic.override({color: col}));
 
-        // tree
-        this.draw_tree(graphics_state,
-            Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
-                           .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
-                           .times(Mat4.translation(Vec.of(10, 4, 10))));
+//         // tree
+//         this.draw_tree(graphics_state,
+//             Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
+//                            .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
+//                            .times(Mat4.translation(Vec.of(10, 4, 10))));
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5)))
