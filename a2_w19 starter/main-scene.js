@@ -110,28 +110,34 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
     // Determine closest point on a given object to a point on the ball
     squaredDistBallObject(obj_coords) {
+        
+        const x_unrotated = Math.cos(obj_coords.rotation) * (this.x_coord - obj_coords.x/2) - Math.sin(obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.x/2;
+        const y_unrotated = Math.sin(obj_coords.rotation) * (this.x_coord - obj_coords.x/2) + Math.cos(obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.y/2;
 
-        this.check = (pn, bmin, bmax) => {
-            var out = 0;            
-            var v = pn;
+        var closest_x = 0;
+        var closest_y = 0;
+        
+        if(x_unrotated < obj_coords.x/2 - obj_coords.margin_x/2)
+            closest_x = obj_coords.x/2 - obj_coords.margin_x/2;
+        else if(x_unrotated > obj_coords.x/2 + obj_coords.margin_x/2)
+            closest_x = obj_coords.x/2 + obj_coords.margin_x/2;
+        else
+            closest_x = x_unrotated;
 
-            if(v < bmin) {
-                var val = (bmin - v);
-                out += val*val;
-            }
-            if(v > bmax) {
-                var val = (v - bmax);
-                out += val*val;
-            }
-            return out;
-        }
+        if(y_unrotated < obj_coords.y/2 - obj_coords.margin_y/2)
+            closest_y = obj_coords.y/2 - obj_coords.margin_y/2;
+        else if(y_unrotated > obj_coords.y/2 + obj_coords.margin_y/2)
+            closest_y = obj_coords.y/2 + obj_coords.margin_y/2;
+        else
+            closest_y = y_unrotated;
 
         var square = 0.0;
 
-        square += this.check(this.x_coord, obj_coords.x/2 - obj_coords.margin_x/2, obj_coords.x/2 + obj_coords.margin_x/2);
-        square += this.check(this.y_coord, obj_coords.y/2 - obj_coords.margin_y/2, obj_coords.y/2 + obj_coords.margin_y/2);
-        
-        return square;
+        const a = Math.abs(x_unrotated - closest_x);
+        const b = Math.abs(y_unrotated - closest_y);
+ 
+        return Math.sqrt((a * a) + (b * b));
+
     }
 
     // Check whether a given object would intersect with the ball
@@ -157,21 +163,24 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 x: 10,
                 y: 20,
                 margin_x: 5,
-                margin_y: 5
+                margin_y: 5,
+                rotation: Math.PI/4,
             },
 
             box2_coords: {
                 x: -15,
                 y: 4,
                 margin_x: 2,
-                margin_y: 2
+                margin_y: 2,
+                rotation: 0,
             },
 
             box3_coords: {
                 x: 5,
                 y: -5,
                 margin_x: 2,
-                margin_y: 2
+                margin_y: 2,
+                rotation: 0,
             }
         };
 
@@ -183,40 +192,41 @@ class Assignment_Two_Skeleton extends Scene_Component {
         for(var obj in object_coords) {
             if(this.checkBallIntersect(object_coords[obj])) {
 
+                console.log("collide");
+
                 const dx = (this.x_coord - object_coords[obj].x/2);
                 const dy = (this.y_coord - object_coords[obj].y/2);
 
                 var theta = Math.atan2(dy,dx)*(180/Math.PI);
 
                 // angular range of each face
-                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x))*(180/Math.PI);
-                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
+                const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x) - object_coords[obj].rotation)*(180/Math.PI);
+                const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y) - object_coords[obj].rotation)*(180/Math.PI);
                 
-                console.log("y_angle ", y_angle);
 
                 // if the ball hits right face
-                if(theta > -y_angle && theta < y_angle) {
+//                 if(theta > -y_angle && theta < y_angle) {
+//                     this.x_vel *= -1;
+// //                    console.log("right");
+//                 }
+//                 // if the ball hits top face
+//                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
+//                     this.y_vel *= -1;
+// //                    console.log("top");
+//                 }
+//                 // etc.
+//                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
+//                     this.y_vel *= -1;
+// //                    console.log("bottom");
+//                 }
+//                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {
+//                     this.x_vel *= -1;
+// //                    console.log("left");
+//                 }
+//                 else {
                     this.x_vel *= -1;
-                    console.log("right");
-                }
-                // if the ball hits top face
-                else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
                     this.y_vel *= -1;
-                    console.log("top");
-                }
-                // etc.
-                else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel *= -1;
-                    console.log(theta);
-                    console.log("bottom");
-                }
-                else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {
-                    this.x_vel *= -1;
-                }
-                else {
-                    this.x_vel *= -1;
-                    this.y_vel *= -1;
-                }
+//                }
             }
         }
 
@@ -259,9 +269,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Draw a couple of completely random, useless boxes
         this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()
+            Mat4.identity()                
                 .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5)))
-                .times(Mat4.scale(Vec.of(object_coords.box1_coords.margin_x, object_coords.box1_coords.margin_y, 2)))
+                .times(Mat4.rotation(object_coords.box1_coords.rotation ,Vec.of(0,0,1)))                
+                .times(Mat4.scale(Vec.of(object_coords.box1_coords.margin_x, object_coords.box1_coords.margin_y, 2)))                
                 , this.plastic);
 
         this.shapes.simplebox.draw(graphics_state, 
