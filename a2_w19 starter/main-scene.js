@@ -201,9 +201,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 const y_angle = (Math.atan(object_coords[obj].margin_y/object_coords[obj].margin_x))*(180/Math.PI);
                 const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
                 
-                const temp = this.x_vel;
-                this.x_vel = -this.y_vel;
-                this.y_vel = -temp;
+                this.x_vel *= -1;
+                this.y_vel *= -1;
 
 //                 if(theta > -y_angle && theta < y_angle) {
 //                     this.x_vel *= -1;
