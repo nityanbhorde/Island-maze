@@ -131,83 +131,20 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // JSON of coordinates of each object
         const object_coords = {
 
-            left_wall: {
-                x: -24,
-                y: 0,
-                margin_x: 1,
-                margin_y: 50,
-            },
+            left_wall:   { x: -24, y: 0,   margin_x: 1,  margin_y: 50}, //0
+            right_wall:  { x: 24,  y: 0,   margin_x: 1,  margin_y: 50}, //1
+            upper_wall:  { x: 0,   y: 24,  margin_x: 50, margin_y: 1},  //2
+            lower_wall:  { x: 0,   y: -24, margin_x: 50, margin_y: 1},  //3
 
-            right_wall: {
-                x: 24,
-                y: 0,
-                margin_x: 1,
-                margin_y: 50
-            },
+            box1:        { x: 5,   y: -15, margin_x: 2,  margin_y: 2},  //4
+            box2:		 { x: -13, y: 4,   margin_x: 2,  margin_y: 2},  //5
+            box3:        { x: -3 + 3*Math.sin(this.t*3),                //6
+								   y: -7,  margin_x: 2,  margin_y: 2}, 
+            tree_stump1: { x: 20,  y: -8,  margin_x: 2,  margin_y: 2},  //7
+            tree_stump2: { x: 15,  y: 0,   margin_x: 2,  margin_y: 2},  //8
 
-            upper_wall: {
-                x: 0,
-                y: 24,
-                margin_x: 50,
-                margin_y: 1
-            },
-
-            lower_wall: {
-                x: 0,
-                y: -24,
-                margin_x: 50,
-                margin_y: 1
-            },
-
-            box1: {
-                x: 5,
-                y: -15,
-                margin_x: 2,
-                margin_y: 2
-            },
-
-            box2: {
-                x: -13,
-                y: 4,
-                margin_x: 2,
-                margin_y: 2
-            },
-
-            box3: {
-                x: -3 + 3*Math.sin(this.t*3),
-                y: -7,
-                margin_x: 2,
-                margin_y: 2
-            },      
-
-            tree_stump1: {
-                x: 20,
-                y: -8,
-                margin_x: 2,
-                margin_y: 2,
-            },
-
-            tree_stump2: {
-                x: 15,
-                y: 0,
-                margin_x: 2,
-                margin_y: 2,
-            },
-
-            tower1: {
-                x: 10,
-                y: 30,
-                margin_x: 4,
-                margin_y: 4
-            },
-
-            tower2: {
-                x: -10,
-                y: 30,
-                margin_x: 4,
-                margin_y: 4
-            }
-
+            tower1:      { x: 5,   y: 15,  margin_x: 3,  margin_y: 3},  //9
+            tower2:      { x: -5,  y: 15,  margin_x: 3,  margin_y: 3},  //10
         };
 
         // Compare the ball's current coordinates with those of the inanimate objects
@@ -300,7 +237,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             Mat4.identity()
                 .times(Mat4.scale(2))
                 .times(Mat4.translation(Vec.of(object_coords.box3.x, object_coords.box3.y, this.z_coord))), this.plastic.override({color: this.brown}));
-
+                
 
         // Main ball that rolls around
         this.shapes.ball.draw(graphics_state, 
@@ -333,10 +270,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Draw castle gates:
         this.shapes.castle.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower1.x, object_coords.tower1.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                .times(Mat4.translation(Vec.of(object_coords.tower1.x*2, object_coords.tower1.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
         this.shapes.castle.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower2.x, object_coords.tower2.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                .times(Mat4.translation(Vec.of(object_coords.tower2.x*2, object_coords.tower2.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
 
 
 
