@@ -9,7 +9,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Locate the camera here (inverted matrix).
         const r = context.width / context.height;
-        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 0, 1));
+        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -70, 70), Vec.of(0, 0, 0), Vec.of(0, 0, 1));
         context.globals.graphics_state.projection_transform = Mat4.perspective(Math.PI / 4, r, .1, 1000);
 
         // Global ball coordinates (and velocity)
@@ -49,10 +49,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'pyramid': new Tetrahedron(false),
             'simplebox': new SimpleCube(),
             'box': new Cube(),
-            'castle': new Castle(),
             'cylinder': new Cylinder(15),
             'cone': new Cone(20),
-            'ball': new Subdivision_Sphere(4)
+            'ball': new Subdivision_Sphere(4),
+            'castle': new Castle()
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
@@ -78,10 +78,15 @@ class Assignment_Two_Skeleton extends Scene_Component {
             box: "assets/even-dice-cubemap.png",
             ball: "assets/soccer_sph_s_resize.png",
             cylinder: "assets/treebark.png",
-            pyramid: "assets/tetrahedron-texture2.png",
-            simplebox: "assets/tetrahedron-texture2.png",
+            pyramid: "assets/stone.png",
+            simplebox: "assets/stone.png",
             cone: "assets/hypnosis.jpg",
-            circle: "assets/hypnosis.jpg"
+            circle: "assets/hypnosis.jpg",
+            arrow_section: "assets/hypnosis.jpg",
+            arrow: "assets/hypnosis.jpg",
+            castle: "assets/stone.png",
+            grass: "assets/grass.png",    // Testing
+            dirt: "assets/dirt.jpg"       // Testing/unused
         };
         for (let t in shape_textures)
             this.shape_materials[t] = this.texture_base.override({
@@ -267,6 +272,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.x_coord += this.x_vel * delta_time;
         this.y_coord += this.y_vel * delta_time;
 
+        //graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
+
         // Draw the basic map scene centered at the origin
         // The plane of the board faces the positive Z direction
         let baseboard = Mat4.identity();
@@ -274,7 +281,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Draw the baseboard
         baseboard = baseboard.times(Mat4.scale(Vec.of(50, 50, 1)));
-        this.shapes.simplebox.draw(graphics_state, baseboard, this.plastic.override({color: this.green}));
+        this.shapes.simplebox.draw(
+            graphics_state,
+            baseboard,
+            this.shape_materials.grass || this.plastic.override({color: this.green}));
 
         // Draw the four walls of the baseboard
         for (var i = 0; i < 4; ++i)
@@ -282,7 +292,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.shapes.simplebox.draw(graphics_state,
                 wall.times(Mat4.rotation(Math.PI/2 * (i > 1), Vec.of(0, 0, 1)))
                     .times(Mat4.scale(Vec.of(50, 1, 4)))
-                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic.override({color: this.brown}));
+                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), 
+                    this.shape_materials.dirt || this.plastic.override({color: this.brown}));
         }
 
         // Draw a couple of completely random, useless boxes
@@ -331,16 +342,14 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 
         
         // Draw castle gates:
-        this.shapes.castle.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower1.x, object_coords.tower1.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
-        this.shapes.castle.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower2.x, object_coords.tower2.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
-
-
-
-        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
+        this.shapes.castle.draw(
+            graphics_state, 
+            Mat4.identity().times(Mat4.translation(Vec.of(object_coords.tower1.x, object_coords.tower1.y, this.z_coord + 8))),
+            this.shape_materials.castle || this.plastic.override({color: this.darkgrey}));
+        this.shapes.castle.draw(
+            graphics_state, 
+            Mat4.identity().times(Mat4.translation(Vec.of(object_coords.tower2.x, object_coords.tower2.y, this.z_coord + 8))),
+            this.shape_materials.castle || this.plastic.override({color: this.darkgrey}));
     }
 
 
