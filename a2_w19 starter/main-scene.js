@@ -9,7 +9,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Locate the camera here (inverted matrix).
         const r = context.width / context.height;
-        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 1, 0));
+
+        context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 0, 1));
         context.globals.graphics_state.projection_transform = Mat4.perspective(Math.PI / 4, r, .1, 1000);
 
         // Global ball coordinates (and velocity)
@@ -30,10 +31,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.x_ctrl = 0;
         this.y_ctrl = 0;
 
-        // testing purposes
-        this.blue = Color.of(0, 0, 1, 1);
-        this.yellow = Color.of(1, 1, 0, 1);
-
         // It may be better to specify control over specific directions
         this.left_ctrl = 0;
         this.right_ctrl = 0;
@@ -53,6 +50,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'pyramid': new Tetrahedron(false),
             'simplebox': new SimpleCube(),
             'box': new Cube(),
+            'castle': new Castle(),
             'cylinder': new Cylinder(15),
             'cone': new Cone(20),
             'ball': new Subdivision_Sphere(4)
@@ -92,6 +90,16 @@ class Assignment_Two_Skeleton extends Scene_Component {
             });
         
         this.lights = [new Light(Vec.of(10, 10, 20, 1), Color.of(1, .4, 1, 1), 100000)];
+
+        this.blue = Color.of(0, 0, 1, 1);
+        this.yellow = Color.of(1, 1, 0, 1);
+        this.red = Color.of(1, 0, 0, 1);
+        this.green = Color.of(0, 1, 0, 1);
+        this.brown = Color.of(0.725, 0.478, 0.341, 1);
+        this.darkgrey = Color.of(0.5, 0.5, 0.5, 1);
+        this.lightgrey = Color.of(0.75, 0.75, 0.75, 1);
+        this.white = Color.of(1, 1, 1, 1);
+        this.black = Color.of(0, 0, 0, 1);
 
         this.t = 0;
     }
@@ -160,30 +168,94 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // JSON of coordinates of each object
         const object_coords = {
-
-            box1_coords: {
-                x: 10,
-                y: 20,
-                margin_x: 7,
-                margin_y: 3,
-                rotation: Math.PI/3,
+            left_wall: {
+                x: -24,
+                y: 0,
+                margin_x: 1,
+                margin_y: 50,
+                rotation: 0,
             },
 
-            box2_coords: {
-                x: -15,
+            right_wall: {
+                x: 24,
+                y: 0,
+                margin_x: 1,
+                margin_y: 50,
+                rotation: 0,
+            },
+
+            upper_wall: {
+                x: 0,
+                y: 24,
+                margin_x: 50,
+                margin_y: 1,
+                rotation: 0,
+            },
+
+            lower_wall: {
+                x: 0,
+                y: -24,
+                margin_x: 50,
+                margin_y: 1,
+                rotation: 0,
+            },
+
+            box1: {
+                x: 5,
+                y: -15,
+                margin_x: 2,
+                margin_y: 2,
+                rotation: 0,
+            },
+
+            box2: {
+                x: -13,
                 y: 4,
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
             },
 
-            box3_coords: {
-                x: 5,
-                y: -5,
+            box3: {
+                x: -3 + 3*Math.sin(this.t*3),
+                y: -7,
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
+            },      
+
+            tree_stump1: {
+                x: 20,
+                y: -8,
+                margin_x: 2,
+                margin_y: 2,
+                rotation: 0,
+            },
+
+            tree_stump2: {
+                x: 15,
+                y: 0,
+                margin_x: 2,
+                margin_y: 2,
+                rotation: 0,
+            },
+
+            tower1: {
+                x: 10,
+                y: 30,
+                margin_x: 4,
+                margin_y: 4,
+                rotation: 0,
+            },
+
+            tower2: {
+                x: -10,
+                y: 30,
+                margin_x: 4,
+                margin_y: 4,
+                rotation: 0,
             }
+
         };
 
 //       console.log("x: ", this.x_coord, "y: ", this.y_coord);
@@ -288,7 +360,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Draw the baseboard
         baseboard = baseboard.times(Mat4.scale(Vec.of(50, 50, 1)));
-        this.shapes.simplebox.draw(graphics_state, baseboard, this.plastic);
+        this.shapes.simplebox.draw(graphics_state, baseboard, this.plastic.override({color: this.green}));
 
         // Draw the four walls of the baseboard
         for (var i = 0; i < 4; ++i)
@@ -296,58 +368,74 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.shapes.simplebox.draw(graphics_state,
                 wall.times(Mat4.rotation(Math.PI/2 * (i > 1), Vec.of(0, 0, 1)))
                     .times(Mat4.scale(Vec.of(50, 1, 4)))
-                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic);
+                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic.override({color: this.brown}));
         }
 
         // Draw a couple of completely random, useless boxes
         this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()                
-                .times(Mat4.translation(Vec.of(object_coords.box1_coords.x, object_coords.box1_coords.y, 1.5)))
-                .times(Mat4.rotation(object_coords.box1_coords.rotation ,Vec.of(0,0,1)))                
-                .times(Mat4.scale(Vec.of(object_coords.box1_coords.margin_x, object_coords.box1_coords.margin_y, 2)))                
-                , this.plastic);
+            Mat4.identity()
+                .times(Mat4.scale(2))
+                .times(Mat4.translation(Vec.of(object_coords.box1.x, object_coords.box1.y, this.z_coord))), this.plastic.override({color: this.brown}));
 
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.box2_coords.x, object_coords.box2_coords.y, 1.5)))
-                .times(Mat4.scale(Vec.of(object_coords.box2_coords.margin_x, object_coords.box2_coords.margin_y, 2)))
-                , this.plastic);
+                .times(Mat4.scale(2))
+                .times(Mat4.translation(Vec.of(object_coords.box2.x, object_coords.box2.y, this.z_coord))), this.plastic.override({color: this.brown}));
 
-//         for (var i = 0; i < 12; ++i)
-//         {
-//             this.shapes.simplebox.draw(graphics_state, 
-//                 Mat4.identity()
-//                     .times(Mat4.scale(2))
-//                     .times(Mat4.translation(Vec.of(12, -21 + (i*2), 1.5))), this.plastic);
-//         }
+        this.shapes.simplebox.draw(graphics_state, 
+            Mat4.identity()
+                .times(Mat4.scale(2))
+                .times(Mat4.translation(Vec.of(object_coords.box3.x, object_coords.box3.y, this.z_coord))), this.plastic.override({color: this.brown}));
 
+        // Main ball that rolls around
         this.shapes.ball.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, 1.5))),
-                    this.plastic.override({color: col}));
+                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))),
+                    this.plastic.override({color: this.lightgrey}));
 
-//         // tree
-//         this.draw_tree(graphics_state,
-//             Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
-//                            .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
-//                            .times(Mat4.translation(Vec.of(10, 4, 10))));
+        // trees
+        this.draw_tree(graphics_state,
+            Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
+                           .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
+                           .times(Mat4.translation(Vec.of(object_coords.tree_stump1.x * 2, 4, object_coords.tree_stump1.y * -2))));
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.box3_coords.x, object_coords.box3_coords.y, 1.5)))
-                .times(Mat4.scale(Vec.of(object_coords.box3_coords.margin_x, object_coords.box3_coords.margin_y, 2)))
-                , this.plastic);
+                .times(Mat4.scale(2))
+                .times(Mat4.translation(Vec.of(object_coords.tree_stump1.x, object_coords.tree_stump1.y, this.z_coord))), this.plastic.override({color: this.brown}));
+
+        this.draw_tree(graphics_state,
+            Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
+                           .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
+                           .times(Mat4.translation(Vec.of(object_coords.tree_stump2.x * 2, 4, object_coords.tree_stump2.y * -2)))
+                           .times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
+        this.shapes.simplebox.draw(graphics_state, 
+            Mat4.identity()
+                .times(Mat4.scale(2))
+                .times(Mat4.translation(Vec.of(object_coords.tree_stump2.x, object_coords.tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));
                 
-        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 50, this.z_coord + 50), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
+        
+        // Draw castle gates:
+        this.shapes.castle.draw(graphics_state, 
+            Mat4.identity()
+                .times(Mat4.translation(Vec.of(object_coords.tower1.x, object_coords.tower1.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+        this.shapes.castle.draw(graphics_state, 
+            Mat4.identity()
+                .times(Mat4.translation(Vec.of(object_coords.tower2.x, object_coords.tower2.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+
+
+
+        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
 
+
     draw_tree(graphics_state, m) {
-        // Code from a sample on CCLE
-        const deg = 0.2* Math.sin(this.t*2);
+        // Based on code from CCLE and from Project 1
+        const deg = 0.1 * Math.sin(this.t*1.2);
         this.shapes.simplebox.draw(
             graphics_state,
             m,
-            this.plastic);
+            this.plastic.override({color: this.brown}));
         for (var i = 0; i < 7; ++i) {
             let sign = (deg >= 0) ? -1 : 1;
             m = m.times(Mat4.translation(Vec.of(-1 * sign, 1, 0)))
@@ -356,10 +444,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.shapes.simplebox.draw(
                 graphics_state,
                 m,
-                this.plastic);
+                this.plastic.override({color: this.brown}));
         }
         
-        // Keep translation coordinates of bushy tree stuff
+        // Keep translation coordinates of tree leaves
         let temp_m = [ m.times(Mat4.translation(Vec.of(-2, 0, 0))),
                        m.times(Mat4.translation(Vec.of(0, 0, -2))),
                        m.times(Mat4.translation(Vec.of(2, 0, 0))),
@@ -385,7 +473,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.shapes.simplebox.draw(
                 graphics_state,
                 temp_m[i],
-                this.plastic);4
+                this.plastic.override({color: this.green}));
         }
     }
 }
