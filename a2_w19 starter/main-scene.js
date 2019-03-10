@@ -236,8 +236,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             },
 
             box3: {
-                x: -3 + 3*Math.sin(this.t*10),
-                y: -7 + 3*Math.cos(this.t*10),
+                x: -3 + 3*Math.sin(this.t*5),
+                y: -7 + 3*Math.cos(this.t*5),
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
@@ -304,6 +304,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // through that object
 
         var col = this.yellow;
+        console.log(this.x_vel);
 
         for(var obj in object_coords) {
             if(this.checkBallIntersect(object_coords[obj])) {
@@ -330,12 +331,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                 var normal_x;
 //                 var normal_y;
 
-                console.log(theta);
 
                 // right face
                 if(theta > -y_angle && theta < y_angle) {
-                    this.x_vel = (10 + object_coords[obj].velocity_x);   
-                    console.log(this.x_vel);                 
+                    this.x_vel = (-this.x_vel + 3*object_coords[obj].velocity_x);   
 //                     face_angle = 90 - object_coords[obj].rotation*(180/Math.PI);
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -346,7 +345,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // if the ball hits top face
                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-                    this.y_vel = (10 + object_coords[obj].velocity_y);
+                    this.y_vel = (-this.y_vel + 3*object_coords[obj].velocity_y);
 //                     face_angle = object_coords[obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -355,7 +354,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // etc.
                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel = -(10 + object_coords[obj].velocity_y);
+                    this.y_vel = (-this.y_vel - 3*object_coords[obj].velocity_y);
 //                     face_angle = object_coords[obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -363,7 +362,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                     this.y_vel = -2*normal_y;                    
                 }
                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
-                    this.x_vel = -(10 + object_coords[obj].velocity_x);
+                    this.x_vel = (-this.x_vel - 3*object_coords[obj].velocity_x);
 //                     face_angle = 90 - object_coords[obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -473,7 +472,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             Mat4.identity()                                                                
                 .times(Mat4.scale(3))
                 .times(Mat4.translation(Vec.of(object_coords.pointyboi.x, object_coords.pointyboi.y, 2))),                 
-                this.clay);
+                this.plastic.override({color: this.lightgrey}));
 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
