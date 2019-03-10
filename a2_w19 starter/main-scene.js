@@ -101,6 +101,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.black = Color.of(0, 0, 0, 1);
 
         this.t = 0;
+
+        this.game_level = 0;
     }
 
 
@@ -129,61 +131,161 @@ class Assignment_Two_Skeleton extends Scene_Component {
         const t = this.t;
 
         // JSON of coordinates of each object
-        const object_coords = {
+        const object_coords = [ 
+        // level 0 items
+        {
+            left_wall:   { x: -24, y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //0
+            right_wall:  { x: 24,  y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //1
+            upper_wall:  { x: 0,   y: 24,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //2
+            lower_wall:  { x: 0,   y: -24, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //3
 
-            left_wall:   { x: -24, y: 0,   margin_x: 1,  margin_y: 50}, //0
-            right_wall:  { x: 24,  y: 0,   margin_x: 1,  margin_y: 50}, //1
-            upper_wall:  { x: 0,   y: 24,  margin_x: 50, margin_y: 1},  //2
-            lower_wall:  { x: 0,   y: -24, margin_x: 50, margin_y: 1},  //3
+            box1:        { x: 5,   y: -15, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //4
+            box2:        { x: -13, y: 4,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //5
+            box3:        { x: -10 + 3*Math.sin(this.t*3),                //6
+                                   y: -17, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            tree_stump1: { x: 20,  y: -8,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //7
+            tree_stump2: { x: 15,  y: 0,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //8
 
-            box1:        { x: 5,   y: -15, margin_x: 2,  margin_y: 2},  //4
-            box2:		 { x: -13, y: 4,   margin_x: 2,  margin_y: 2},  //5
-            box3:        { x: -3 + 3*Math.sin(this.t*3),                //6
-								   y: -7,  margin_x: 2,  margin_y: 2}, 
-            tree_stump1: { x: 20,  y: -8,  margin_x: 2,  margin_y: 2},  //7
-            tree_stump2: { x: 15,  y: 0,   margin_x: 2,  margin_y: 2},  //8
+            tower1:      { x: 5,   y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //9
+            tower2:      { x: -5,  y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1}   //10
+        },
 
-            tower1:      { x: 5,   y: 15,  margin_x: 3,  margin_y: 3},  //9
-            tower2:      { x: -5,  y: 15,  margin_x: 3,  margin_y: 3},  //10
-        };
+        // level 1 items
+        {
+            left_wall:   { x: -24, y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            right_wall:  { x: 24,  y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            upper_wall:  { x: 0,   y: 24,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            lower_wall:  { x: 0,   y: -24, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+
+            tower1:      { x: 5,   y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            tower2:      { x: -5,  y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+
+            box01:       { x: 0,   y: -4,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box02:       { x: -5,  y: 7,   margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box03:       { x: 3,   y: 4,   margin_x: 14, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box04:       { x: 11,  y: 1,   margin_x: 2,  margin_y: 28, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box05:       { x: 0,   y: -12, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box06:       { x: -12, y: -1,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box07:       { x: -12, y: -1,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box08:       { x: -18 + 6*Math.sin(1.5*t),
+                                   y: 5,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box09:       { x: -18 + 6*Math.sin(1.5*t - 0.2),
+                                   y: 3,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box10:       { x: -18 + 6*Math.sin(1.5*t - 0.4),
+                                   y: 1,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box11:       { x: -18 + 6*Math.sin(1.5*t - 0.6),
+                                   y: -1,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box12:       { x: -18 + 6*Math.sin(1.5*t - 0.8),
+                                   y: -3,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box13:       { x: -18 + 6*Math.sin(1.5*t - 1),
+                                   y: -5,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box14:       { x: -18 + 6*Math.sin(1.5*t - 1.2),
+                                   y: -7,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box15:       { x: -18 + 6*Math.sin(1.5*t - 1.4),
+                                   y: -9,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box16:       { x: -18 + 6*Math.sin(1.5*t - 1.6),
+                                   y: -11, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box17:       { x: -19, y: 14 + 4*Math.cos(1.5*t),
+                                           margin_x: 12, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box18:       { x: -1,  y: -19, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box19:       { x: -12, y: -18 + 3*Math.cos(1.5*t),
+                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box20:       { x: 11 , y: -18 - 3*Math.cos(1.5*t),
+                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box21:       { x: 16,  y: -10, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box22:       { x: 20,  y: -4 , margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box23:       { x: 16,  y: 2,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box24:       { x: 20,  y: 8,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box25:       { x: 16,  y: 14,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box26:       { x: 5,   y: 14,  margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box27:       { x: 18,  y: -18, margin_x: 4 + 2*Math.sin(t),  margin_y: 4 + 2*Math.sin(t), 
+                                                                       rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+        },
+
+        // level 2 items
+        {
+            left_wall:   { x: -24, y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            right_wall:  { x: 24,  y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            upper_wall:  { x: 0,   y: 24,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            lower_wall:  { x: 0,   y: -24, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+
+            tower1:      { x: 5,   y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            tower2:      { x: -5,  y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+
+            box01:       { x: 0,   y: 4,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box02:       { x: 5,   y: -8,  margin_x: 2,  margin_y: 26, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box03:       { x: -5,  y: -10, margin_x: 2,  margin_y: 30, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box04:       { x: 0 + 5*Math.sin(1*t),
+                                   y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box05:       { x: 0 + 5*Math.sin(1*t + Math.PI),
+                                   y: -9,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box06:       { x: 0 + 5*Math.sin(1*t),
+                                   y: -12, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box07:       { x: 0 + 5*Math.sin(1*t + Math.PI),
+                                   y: -15, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box08:       { x: 0 + 5*Math.sin(1*t),
+                                   y: -18, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box09:       { x: 15,  y: -16, margin_x: 2,  margin_y: 6,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box10:       { x: 15,  y: -5,  margin_x: 2,  margin_y: 7,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box11:       { x: 15,  y: 8,   margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box12:       { x: 10,  y: -20, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box13:       { x: 10,  y: -20 + 4*(t % 6), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box14:       { x: 10,  y: -20 + 4*((t + 4) % 6), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box15:       { x: 10,  y: -20 + 4*((t + 8) % 6), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box16:       { x: 10,  y: 4,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box17:       { x: 20,  y: -5,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box18:       { x: 20,  y: -24 + 4*((t + 2.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box19:       { x: 20,  y: -24 + 4*((t + 4.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box20:       { x: 20,  y: -24 + 4*((t + 6.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box21:       { x: 20,  y: -24 + 4*((t + 8.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box22:       { x: 8,   y: 18,  margin_x: 2,  margin_y: 14, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box23:       { x: -1,  y: 10,  margin_x: 20, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box24:       { x: -12, y: -4,  margin_x: 2,  margin_y: 30, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box25:       { x: -8.5,y: 10 - 5*((t + 4) % 6),
+                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box26:       { x: -8.5,y: 10 - 5*((t + 6) % 6),
+                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box27:       { x: -8.5,y: 10 - 5*((t + 8) % 6),
+                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+        },
+        ];
 
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
         // through that object
         
-        /*var check_left = 1;
-        var check_right = 1;
-        var check_up = 1;
-        var check_down = 1;*/
-        for(var obj in object_coords) {
-            if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x)) {            
-                if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= object_coords[obj].y) {
-                    this.y_vel *= -1;
-                    //check_up = false;
-                }
+//         for(var obj in object_coords[this.game_level]) {
+//             if(this.x_coord >= (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x) && this.x_coord <= (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x)) {            
+//                 if(this.y_coord >= (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y) && this.y_coord <= object_coords[this.game_level][obj].y) {
+//                     this.y_vel *= -1;
+//                     //check_up = false;
+//                 }
 
-                if(this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y) && this.y_coord >= object_coords[obj].y) {
-                    this.y_vel *= -1;
-                    //check_down = false;
-                }
-            }
+//                 if(this.y_coord <= (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y) && this.y_coord >= object_coords[this.game_level][obj].y) {
+//                     this.y_vel *= -1;
+//                     //check_down = false;
+//                 }
+//             }
 
-            if(this.y_coord >= (object_coords[obj].y - object_coords[obj].margin_y) && this.y_coord <= (object_coords[obj].y + object_coords[obj].margin_y)) {
-                if(this.x_coord >= (object_coords[obj].x - object_coords[obj].margin_x) && this.x_coord <= object_coords[obj].x) {
-                    this.x_vel *= -1;
-                    //check_right = false;
-                }
+//             if(this.y_coord >= (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y) && this.y_coord <= (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y)) {
+//                 if(this.x_coord >= (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x) && this.x_coord <= object_coords[this.game_level][obj].x) {
+//                     this.x_vel *= -1;
+//                     //check_right = false;
+//                 }
 
-                if(this.x_coord <= (object_coords[obj].x + object_coords[obj].margin_x) && this.x_coord >= object_coords[obj].x) {
-                    this.x_vel *= -1;
-                    //check_left = false;
-                }
-            }
-        }
-        /*this.left_ctrl = check_left;
-        this.right_ctrl = check_right;
-        this.up_ctrl = check_up;
-        this.down_ctrl = check_down;*/
+//                 if(this.x_coord <= (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x) && this.x_coord >= object_coords[this.game_level][obj].x) {
+//                     this.x_vel *= -1;
+//                     //check_left = false;
+//                 }
+//             }
+//         }
 
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
@@ -222,62 +324,48 @@ class Assignment_Two_Skeleton extends Scene_Component {
                     .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic.override({color: this.brown}));
         }
 
-        // Draw a couple of completely random, useless boxes
-        this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box1.x, object_coords.box1.y, this.z_coord))), this.plastic.override({color: this.brown}));
-
-        this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box2.x, object_coords.box2.y, this.z_coord))), this.plastic.override({color: this.brown}));
-
-        this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.box3.x, object_coords.box3.y, this.z_coord))), this.plastic.override({color: this.brown}));
-                
+        // Draw castle gates:
+        this.shapes.castle.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].tower1.x*2, object_coords[0].tower1.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+        this.shapes.castle.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].tower2.x*2, object_coords[0].tower2.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
 
         // Main ball that rolls around
-        this.shapes.ball.draw(graphics_state, 
-                Mat4.identity()
-                    .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))),
-                    this.plastic.override({color: this.lightgrey}));
+        this.shapes.ball.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))), this.plastic.override({color: this.lightgrey}));
 
-        // trees
-        this.draw_tree(graphics_state,
-            Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
-                           .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
-                           .times(Mat4.translation(Vec.of(object_coords.tree_stump1.x * 2, 4, object_coords.tree_stump1.y * -2))));
-        this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.tree_stump1.x, object_coords.tree_stump1.y, this.z_coord))), this.plastic.override({color: this.brown}));
+        // Only draw certain objects depending on the level
+        if (this.game_level == 0)
+        {
+            // level 0
+                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box1.x, object_coords[0].box1.y, this.z_coord))), this.plastic.override({color: this.brown}));
+                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box2.x, object_coords[0].box2.y, this.z_coord))), this.plastic.override({color: this.brown}));
+                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box3.x, object_coords[0].box3.y, this.z_coord))), this.plastic.override({color: this.brown}));                    
 
-        this.draw_tree(graphics_state,
-            Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2)))
-                           .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
-                           .times(Mat4.translation(Vec.of(object_coords.tree_stump2.x * 2, 4, object_coords.tree_stump2.y * -2)))
-                           .times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
-        this.shapes.simplebox.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.tree_stump2.x, object_coords.tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));
-                
-        
-        // Draw castle gates:
-        this.shapes.castle.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower1.x*2, object_coords.tower1.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
-        this.shapes.castle.draw(graphics_state, 
-            Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower2.x*2, object_coords.tower2.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                // trees
+                this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[0].tree_stump1.x * 2, 4, object_coords[0].tree_stump1.y * -2))));
+                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].tree_stump1.x, object_coords[0].tree_stump1.y, this.z_coord))), this.plastic.override({color: this.brown}));
 
+                this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[0].tree_stump2.x * 2, 4, object_coords[0].tree_stump2.y * -2))).times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
+                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].tree_stump2.x, object_coords[0].tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));
+        }
+        else // we have level 1+
+        {
+            for (var obj in object_coords[this.game_level])
+            {
+                if (object_coords[this.game_level][obj].draw == 1)
+                {
+                    this.shapes.simplebox.draw(graphics_state,
+                            Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level][obj].x*2, object_coords[this.game_level][obj].y*2, 2*this.z_coord))
+                            .times(Mat4.scale(Vec.of(object_coords[this.game_level][obj].margin_x, object_coords[this.game_level][obj].margin_y, 2)))), this.plastic.override({color: this.brown}));
+                }
+            }
+        }
 
-
-        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
+        if (this.y_coord > (object_coords[0].tower1.y) && this.x_coord < (object_coords[0].tower1.x) && this.x_coord > (object_coords[0].tower2.x))
+        {
+            this.game_level += 1;
+            this.x_coord = this.y_coord = this.x_vel = this.y_vel = this.x_acc = this.y_acc = 0;
+            if (this.game_level == 4) this.game_level = 0;
+        }
+        //graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
 
 
