@@ -129,17 +129,17 @@ class Assignment_Two_Skeleton extends Scene_Component {
         var closest_x = 0;
         var closest_y = 0;
         
-        if(x_unrotated < obj_coords.x/2 - obj_coords.margin_x/2)
-            closest_x = obj_coords.x/2 - obj_coords.margin_x/2;
-        else if(x_unrotated > obj_coords.x/2 + obj_coords.margin_x/2)
-            closest_x = obj_coords.x/2 + obj_coords.margin_x/2;
+        if(x_unrotated < obj_coords.x - obj_coords.margin_x/2)
+            closest_x = obj_coords.x - obj_coords.margin_x/2;
+        else if(x_unrotated > obj_coords.x + obj_coords.margin_x/2)
+            closest_x = obj_coords.x + obj_coords.margin_x/2;
         else
             closest_x = x_unrotated;
 
-        if(y_unrotated < obj_coords.y/2 - obj_coords.margin_y/2)
-            closest_y = obj_coords.y/2 - obj_coords.margin_y/2;
-        else if(y_unrotated > obj_coords.y/2 + obj_coords.margin_y/2)
-            closest_y = obj_coords.y/2 + obj_coords.margin_y/2;
+        if(y_unrotated < obj_coords.y - obj_coords.margin_y/2)
+            closest_y = obj_coords.y - obj_coords.margin_y/2;
+        else if(y_unrotated > obj_coords.y + obj_coords.margin_y/2)
+            closest_y = obj_coords.y + obj_coords.margin_y/2;
         else
             closest_y = y_unrotated;
 
@@ -174,6 +174,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 1,
                 margin_y: 50,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             right_wall: {
@@ -182,6 +184,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 1,
                 margin_y: 50,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             upper_wall: {
@@ -190,6 +194,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 50,
                 margin_y: 1,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             lower_wall: {
@@ -198,6 +204,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 50,
                 margin_y: 1,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             box1: {
@@ -206,6 +214,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             box2: {
@@ -214,6 +224,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             box3: {
@@ -222,6 +234,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
+                velocity_x: Math.cos(this.t*3),
+                velocity_y: 0,
             },      
 
             tree_stump1: {
@@ -230,6 +244,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             tree_stump2: {
@@ -238,6 +254,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             tower1: {
@@ -246,6 +264,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 4,
                 margin_y: 4,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             },
 
             tower2: {
@@ -254,6 +274,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 margin_x: 4,
                 margin_y: 4,
                 rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
             }
 
         };
@@ -272,8 +294,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                col = this.blue;
 
                 // calculate bearing angle between ball and object (where 0 is defined as East)
-                const dx = (this.x_coord - object_coords[obj].x/2);
-                const dy = (this.y_coord - object_coords[obj].y/2);
+                const dx = this.x_coord - object_coords[obj].x;
+                const dy = this.y_coord - object_coords[obj].y;
                 var theta = (Math.atan2(dy,dx) - object_coords[obj].rotation)*(180/Math.PI);
 
                 // range of bearing angles of each face
@@ -282,16 +304,19 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 const x_angle = (Math.atan(object_coords[obj].margin_x/object_coords[obj].margin_y))*(180/Math.PI);
 
                 // determine the angle of direction of the ball
-                const kappa = 1e-1;
-                const phi = Math.atan(this.y_vel/(this.x_vel+kappa));
+//                 const kappa = 1e-1;
+//                 const phi = Math.atan(this.y_vel/(this.x_vel+kappa));
 
-                var face_angle;
-                var normal_x;
-                var normal_y;
+//                 var face_angle;
+//                 var normal_x;
+//                 var normal_y;
+
+                console.log(theta);
 
                 // right face
                 if(theta > -y_angle && theta < y_angle) {
-                    this.x_vel *= -1;                   
+                    this.x_vel = (10 + object_coords[obj].velocity_x);   
+                    console.log(this.x_vel);                 
 //                     face_angle = 90 - object_coords[obj].rotation*(180/Math.PI);
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -302,7 +327,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // if the ball hits top face
                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-                    this.y_vel *= -1;
+                    this.y_vel = (10 + object_coords[obj].velocity_y);
 //                     face_angle = object_coords[obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -311,15 +336,15 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // etc.
                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel *= -1;
+                    this.y_vel = -(10 + object_coords[obj].velocity_y);
 //                     face_angle = object_coords[obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
 //                     this.x_vel = 2*normal_x;
 //                     this.y_vel = -2*normal_y;                    
                 }
-                else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {
-                    this.x_vel *= -1;
+                else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
+                    this.x_vel = -(10 + object_coords[obj].velocity_x);
 //                     face_angle = 90 - object_coords[obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
