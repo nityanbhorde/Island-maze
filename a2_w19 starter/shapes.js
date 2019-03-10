@@ -285,6 +285,79 @@ window.Castle = window.classes.Castle = class Castle extends Shape {
     }
 }
 
+window.Pointy_boi = window.classes.Pointy_boi = class Pointy_boi extends Shape {
+    constructor() {
+        super("positions", "normals", "texture_coords");
+
+
+        this.positions.push(...Vec.cast(
+            // cubic base
+            [-1,  1, -1], [-1, -1, -1], [ 1,  1, -1], [ 1, -1, -1],
+            [-1,  1,  1], [ 1,  1,  1], [-1,  1, -1], [ 1,  1, -1],
+            [-1, -1, -1], [ 1, -1, -1], [-1, -1,  1], [ 1, -1,  1],
+            [-1, -1, -1], [-1, -1,  1], [-1,  1, -1], [-1,  1,  1],
+            [ 1, -1, -1], [ 1, -1,  1], [ 1,  1, -1], [ 1,  1,  1],
+
+            // pyramid
+            // front left-half face
+            [-1, -1, 1], [0, -1, 1], [0, 0, 2],
+            // front right-half face
+            [0, -1, 1], [1, -1, 1], [0, 0, 2],
+            // rear face
+            [1, 1, 1], [-1, 1, 1], [0, 0, 2],
+            // left face
+            [-1, 1, 1], [-1, -1, 1], [0, 0, 2],
+            // right face
+            [1, -1, 1], [1, 1, 1], [0, 0, 2],
+
+        ));
+
+        this.texture_coords.push(...Vec.cast(
+            [0,    2/3], [0.25, 2/3], [0,    1/3], [0.25, 1/3],
+            [0.75, 2/3], [0.75, 1/3], [1,    2/3], [1,    1/3],
+            [0.25, 2/3], [0.25, 1/3], [0.5,  2/3], [0.5,  1/3],
+            [0.25, 2/3], [0.5,  2/3], [0.25, 1  ], [0.5,  1  ],
+            [0.25, 1/3], [0.5,  1/3], [0.25, 0  ], [0.5,  0  ],
+            [0, 0], [0, 1], [1, 1],
+            [0, 0], [0, 1], [1, 1],
+            [0, 0], [0, 1], [1/2, 1],
+            [0, 0], [0, 1], [1/2, 1],
+            [0, 0], [0, 1], [1/2, 1],
+
+        )); 
+
+        this.normals.push(...Vec.cast(
+            ...Array(4).fill([ 0,  0, -1]),
+            ...Array(4).fill([ 0,  1,  0]),
+            ...Array(4).fill([ 0, -1,  0]),
+            ...Array(4).fill([-1,  0,  0]),
+            ...Array(4).fill([ 1,  0,  0]),
+
+            ...Array(3).fill([0, -1, 1]),
+            // intentionally create discontinuous shading effect
+            ...Array(3).fill([0, -1, 1.5]),
+            ...Array(3).fill([0, 1, 1]),
+            ...Array(3).fill([-1, 0, 1]),
+            ...Array(3).fill([1, 0, 1]),
+        ));
+        
+        this.indices.push(
+            0, 2, 1, 1, 2, 3,
+            4, 5, 6, 5, 7, 6,
+            8, 9, 10, 9, 11, 10,    
+            12, 13, 14, 13, 15, 14,
+            16, 19, 18, 16, 17, 19,
+
+            20, 21, 22,
+            23, 24, 25,
+            26, 27, 28,
+            29, 30, 31,
+            32, 33, 34
+        );
+
+    }
+};
+
 window.Cube = window.classes.Cube = class Cube extends Shape {
     constructor() {
         super("positions", "normals", "texture_coords");

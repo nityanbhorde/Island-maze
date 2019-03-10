@@ -53,7 +53,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'castle': new Castle(),
             'cylinder': new Cylinder(15),
             'cone': new Cone(20),
-            'ball': new Subdivision_Sphere(4)
+            'ball': new Subdivision_Sphere(4),
+            'pointy_boi': new Pointy_boi(),
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
@@ -122,6 +123,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
     // Determine closest point on a given object to a point on the ball
     squaredDistBallObject(obj_coords) {
+
+        obj_coords.x *= obj_coords.margin_x/2;
+        obj_coords.y *= obj_coords.margin_y/2;
         
         const x_unrotated = Math.cos(-obj_coords.rotation) * (this.x_coord - obj_coords.x/2) - Math.sin(-obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.x/2;
         const y_unrotated = Math.sin(-obj_coords.rotation) * (this.x_coord - obj_coords.x/2) + Math.cos(-obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.y/2;
@@ -145,6 +149,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         const a = Math.abs(x_unrotated - closest_x);
         const b = Math.abs(y_unrotated - closest_y);
+
+        obj_coords.x /= obj_coords.margin_x/2;
+        obj_coords.y /= obj_coords.margin_y/2;
  
         return Math.sqrt((a * a) + (b * b));
 
@@ -171,7 +178,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             left_wall: {
                 x: -24,
                 y: 0,
-                margin_x: 1,
+                margin_x: 2,
                 margin_y: 50,
                 rotation: 0,
                 velocity_x: 0,
@@ -181,7 +188,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             right_wall: {
                 x: 24,
                 y: 0,
-                margin_x: 1,
+                margin_x: 2,
                 margin_y: 50,
                 rotation: 0,
                 velocity_x: 0,
@@ -192,7 +199,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 x: 0,
                 y: 24,
                 margin_x: 50,
-                margin_y: 1,
+                margin_y: 2,
                 rotation: 0,
                 velocity_x: 0,
                 velocity_y: 0,
@@ -202,7 +209,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 x: 0,
                 y: -24,
                 margin_x: 50,
-                margin_y: 1,
+                margin_y: 2,
                 rotation: 0,
                 velocity_x: 0,
                 velocity_y: 0,
@@ -229,13 +236,13 @@ class Assignment_Two_Skeleton extends Scene_Component {
             },
 
             box3: {
-                x: -3 + 3*Math.sin(this.t*3),
-                y: -7,
+                x: -3 + 3*Math.sin(this.t*10),
+                y: -7 + 3*Math.cos(this.t*10),
                 margin_x: 2,
                 margin_y: 2,
                 rotation: 0,
-                velocity_x: Math.cos(this.t*3),
-                velocity_y: 0,
+                velocity_x: 10,
+                velocity_y: 10,
             },      
 
             tree_stump1: {
@@ -259,8 +266,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             },
 
             tower1: {
-                x: 10,
-                y: 30,
+                x: 10/4,
+                y: 30/4,
                 margin_x: 4,
                 margin_y: 4,
                 rotation: 0,
@@ -269,10 +276,20 @@ class Assignment_Two_Skeleton extends Scene_Component {
             },
 
             tower2: {
-                x: -10,
-                y: 30,
+                x: -10/4,
+                y: 30/4,
                 margin_x: 4,
                 margin_y: 4,
+                rotation: 0,
+                velocity_x: 0,
+                velocity_y: 0,
+            },
+
+            pointyboi: {
+                x: 10,
+                y: 10,
+                margin_x: 3,
+                margin_y: 3,
                 rotation: 0,
                 velocity_x: 0,
                 velocity_y: 0,
@@ -291,7 +308,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         for(var obj in object_coords) {
             if(this.checkBallIntersect(object_coords[obj])) {
 
-//                col = this.blue;
+//                col = this.blue;                
+                object_coords[obj].x *= object_coords[obj].margin_x/2;
+                object_coords[obj].y *= object_coords[obj].margin_y/2;
 
                 // calculate bearing angle between ball and object (where 0 is defined as East)
                 const dx = this.x_coord - object_coords[obj].x;
@@ -355,7 +374,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
                     this.x_vel *= -1;
                     this.y_vel *= -1;
                  }
-
+                 
+                 object_coords[obj].x /= object_coords[obj].margin_x/2;
+                 object_coords[obj].y /= object_coords[obj].margin_y/2;
             }
         }
 
@@ -392,8 +413,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
         {
             this.shapes.simplebox.draw(graphics_state,
                 wall.times(Mat4.rotation(Math.PI/2 * (i > 1), Vec.of(0, 0, 1)))
-                    .times(Mat4.scale(Vec.of(50, 1, 4)))
-                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic.override({color: this.brown}));
+                    .times(Mat4.scale(Vec.of(50, 2, 4)))
+                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 24 : -24), 1.25))), this.plastic.override({color: this.brown}));
         }
 
         // Draw a couple of completely random, useless boxes
@@ -437,18 +458,22 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.simplebox.draw(graphics_state, 
             Mat4.identity()
                 .times(Mat4.scale(2))
-                .times(Mat4.translation(Vec.of(object_coords.tree_stump2.x, object_coords.tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));
-                
-        
+                .times(Mat4.translation(Vec.of(object_coords.tree_stump2.x, object_coords.tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));                      
+
         // Draw castle gates:
         this.shapes.castle.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower1.x, object_coords.tower1.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                .times(Mat4.translation(Vec.of(object_coords.tower1.x*4, object_coords.tower1.y*4, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
         this.shapes.castle.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords.tower2.x, object_coords.tower2.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                .times(Mat4.translation(Vec.of(object_coords.tower2.x*4, object_coords.tower2.y*4, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
 
-
+        // object with flat shading
+        this.shapes.pointy_boi.draw(graphics_state,
+            Mat4.identity()                                                                
+                .times(Mat4.scale(3))
+                .times(Mat4.translation(Vec.of(object_coords.pointyboi.x, object_coords.pointyboi.y, 2))),                 
+                this.clay);
 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
