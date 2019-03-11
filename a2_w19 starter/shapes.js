@@ -490,13 +490,7 @@ window.Subdivision_Sphere = window.classes.Subdivision_Sphere = class Subdivisio
 }
 
 
-// Text_Line embeds text in the 3D world, using a crude texture method.  This
-// Shape is made of a horizontal arrangement of quads. Each is textured over with
-// images of ASCII characters, spelling out a string.  Usage:  Instantiate the
-// Shape with the desired character line width.  Assign it a single-line string
-// by calling set_string("your string") on it. Draw the shape on a material
-// with full ambient weight, and text.png assigned as its texture file.  For
-// multi-line strings, repeat this process and draw with a different matrix.
+// Text_Line embeds text in the 3D world, using a crude texture method. Learned from Jeffery Zhu.
 
 window.Text_Line = window.classes.Text_Line = 
 class Text_Line extends Shape                       
@@ -506,20 +500,25 @@ class Text_Line extends Shape
       this.max_size = max_size;
       var object_transform = Mat4.identity();
       for( var i = 0; i < max_size; i++ )
-      { Square.insert_transformed_copy_into( this, [], object_transform );   // Each quad is a separate Square instance.
+      { Square.insert_transformed_copy_into( this, [], object_transform );
         object_transform.post_multiply( Mat4.translation([ 1.5,0,0 ]) );
       }
     }
-  set_string( line, gl = this.gl )        // Overwrite the texture coordinates buffer with new values per quad,
-    { this.texture_coords = [];           // which enclose each of the string's characters.
+  read_string( str, gl = this.gl )
+    { this.texture_coords = [];
       for( var i = 0; i < this.max_size; i++ )
         {
-          var row = Math.floor( ( i < line.length ? line.charCodeAt( i ) : ' '.charCodeAt() ) / 16 ),
-              col = Math.floor( ( i < line.length ? line.charCodeAt( i ) : ' '.charCodeAt() ) % 16 );
+          // dividing the texture map into individual characters  
+          var r = Math.floor( ( i < str.length ? str.charCodeAt( i ) : ' '.charCodeAt() ) / 16 ),
+              c = Math.floor( ( i < str.length ? str.charCodeAt( i ) : ' '.charCodeAt() ) % 16 );
 
-          var skip = 3, size = 32, sizefloor = size - skip;
-          var dim = size * 16,  left  = (col * size + skip) / dim,      top    = (row * size + skip) / dim,
-                                right = (col * size + sizefloor) / dim, bottom = (row * size + sizefloor + 5) / dim;
+          var pass = 3
+          var size = 32
+          var size_floor = size - pass;
+
+          // traversing through the characters, selecting appropriate sub-image to render
+          var dim = size * 16,  left  = (c * size + pass) / dim,      top    = (r * size + pass) / dim,
+                                right = (c * size + size_floor) / dim, bottom = (r * size + size_floor + 5) / dim;
 
           this.texture_coords.push( ...Vec.cast( [ left,  1-bottom], [ right, 1-bottom ], [ left,  1-top ], [ right, 1-top ] ) );
         }
