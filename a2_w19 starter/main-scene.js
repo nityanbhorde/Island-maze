@@ -100,12 +100,12 @@ class Assignment_Two_Skeleton extends Scene_Component {
     	}
 
     	// the points we want our bezier to scale from
-		var p0 = {x: 5, y: 4}; 
-		var p1 = {x: 10, y: 10};
-		var p2 = {x: 10, y: -5};
-		var p3 = {x: 15, y: 20};
-		//globals for bezier
-		this.b_direction = 1; //swaps direction on the last point
+	var p0 = {x: 5, y: 4}; 
+	var p1 = {x: 10, y: 10};
+	var p2 = {x: 10, y: -5};
+	var p3 = {x: 15, y: 20};
+	//globals for bezier
+	this.b_direction = 1; //swaps direction on the last point
         this.global_bez = 0;
         this.bez_max = 100; //only 100, fairly good accuracy for the curve
         this.bez_array = [];
@@ -197,7 +197,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
     }
 
         
-    draw_bezier(graphics_state){
+   draw_bezier(graphics_state){
     	if(this.b_direction  == 1){
         	this.global_bez += 1;
 		}
