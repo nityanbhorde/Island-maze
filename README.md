@@ -1,9 +1,3 @@
-Team Members: 
-Andrew Canafe	905188808
-David Johnson	404813615
-Virgil Jose		904765891
-Gautam Nambiar	004933460
-Nityan Bhorde   904793498
+Team Members: Andrew Canafe, David Johnson, Virgil Jose, Gautam Nambiar, Nityan Bhorde 
 
-Special Instructions:
-Game to be run as normal assignments are. 
+Special Instructions: Game to be run as normal assignments are.
