@@ -130,10 +130,14 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'castle': new Castle(),
             'cylinder': new Cylinder(15),
             'cone': new Cone(20),
-            'ball': new Subdivision_Sphere(4)
+            'ball': new Subdivision_Sphere(4),
+            'text_line': new Text_Line(35),
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
+
+
+        this.shapes.text_line.set_string("ISLAND MAZE");
 
         // Make some Material objects available to you:
         this.clay = context.get_instance(Phong_Shader).material(Color.of(.9, .5, .9, 1), {
@@ -159,7 +163,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             pyramid: "assets/tetrahedron-texture2.png",
             simplebox: "assets/tetrahedron-texture2.png",
             cone: "assets/hypnosis.jpg",
-            circle: "assets/fire.jpg"
+            circle: "assets/fire.jpg",
+            text_line: "assets/text.png"
         };
         for (let t in shape_textures)
             this.shape_materials[t] = this.texture_base.override({
@@ -335,7 +340,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
             Mat4.identity()
                 .times(Mat4.scale(2))
                 .times(Mat4.translation(Vec.of(object_coords.box3.x, object_coords.box3.y, this.z_coord))), this.plastic.override({color: this.brown}));
-                
 
         // Main ball that rolls around
         this.shapes.ball.draw(graphics_state, 
@@ -403,7 +407,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
             Mat4.identity()
                 .times(Mat4.translation(Vec.of(object_coords.tower2.x*2, object_coords.tower2.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
 
-
+        // Draw text line:
+        this.shapes.text_line.draw(graphics_state,
+            Mat4.identity()
+                .times(Mat4.translation(Vec.of(-2.5, 20, 20))), this.shape_materials['text_line']);
 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
