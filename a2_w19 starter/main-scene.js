@@ -1,4 +1,4 @@
-class Assignment_Two_Skeleton extends Scene_Component {
+class Assignment_Two_Skeleton extends Scene_Component {    
     // The scene begins by requesting the camera, shapes, and materials it will need.
     constructor(context, control_box) {
         super(context, control_box);
@@ -9,6 +9,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Locate the camera here (inverted matrix).
         const r = context.width / context.height;
+
         context.globals.graphics_state.camera_transform = Mat4.look_at(Vec.of(0, -50, 50), Vec.of(0, 0, 0), Vec.of(0, 0, 1));
         context.globals.graphics_state.projection_transform = Mat4.perspective(Math.PI / 4, r, .1, 1000);
 
@@ -52,7 +53,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'castle': new Castle(),
             'cylinder': new Cylinder(15),
             'cone': new Cone(20),
-            'ball': new Subdivision_Sphere(4)
+            'ball': new Subdivision_Sphere(4),
+            'pointy_boi': new Pointy_boi(),
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
@@ -63,7 +65,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             diffusivity: .4
         });
         this.plastic = this.clay.override({
-            specularity: .6
+            specularity: .6,            
         });
         this.texture_base = context.get_instance(Phong_Shader).material(Color.of(0, 0, 0, 1), {
             ambient: 1,
@@ -121,6 +123,49 @@ class Assignment_Two_Skeleton extends Scene_Component {
     }
 
 
+    // Determine closest point on a given object to a point on the ball
+    squaredDistBallObject(obj_coords) {
+
+        obj_coords.x *= obj_coords.margin_x/2;
+        obj_coords.y *= obj_coords.margin_y/2;
+        
+        const x_unrotated = Math.cos(-obj_coords.rotation) * (this.x_coord - obj_coords.x/2) - Math.sin(-obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.x/2;
+        const y_unrotated = Math.sin(-obj_coords.rotation) * (this.x_coord - obj_coords.x/2) + Math.cos(-obj_coords.rotation) * (this.y_coord - obj_coords.y/2) + obj_coords.y/2;
+
+        var closest_x = 0;
+        var closest_y = 0;
+        
+        if(x_unrotated < obj_coords.x - obj_coords.margin_x/2)
+            closest_x = obj_coords.x - obj_coords.margin_x/2;
+        else if(x_unrotated > obj_coords.x + obj_coords.margin_x/2)
+            closest_x = obj_coords.x + obj_coords.margin_x/2;
+        else
+            closest_x = x_unrotated;
+
+        if(y_unrotated < obj_coords.y - obj_coords.margin_y/2)
+            closest_y = obj_coords.y - obj_coords.margin_y/2;
+        else if(y_unrotated > obj_coords.y + obj_coords.margin_y/2)
+            closest_y = obj_coords.y + obj_coords.margin_y/2;
+        else
+            closest_y = y_unrotated;
+
+        const a = Math.abs(x_unrotated - closest_x);
+        const b = Math.abs(y_unrotated - closest_y);
+
+        obj_coords.x /= obj_coords.margin_x/2;
+        obj_coords.y /= obj_coords.margin_y/2;
+ 
+        return Math.sqrt((a * a) + (b * b));
+
+    }
+
+    // Check whether a given object would intersect with the ball
+    checkBallIntersect(obj_coords) {
+        const squaredDist = this.squaredDistBallObject(obj_coords);
+        return squaredDist <= 1;
+    }
+
+
     display(graphics_state) {
         // Use the lights stored in this.lights.
         graphics_state.lights = this.lights;
@@ -131,23 +176,26 @@ class Assignment_Two_Skeleton extends Scene_Component {
         const t = this.t;
 
         // JSON of coordinates of each object
-        const object_coords = [ 
+        const object_coords = [
         // level 0 items
         {
-            left_wall:   { x: -24, y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //0
-            right_wall:  { x: 24,  y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //1
-            upper_wall:  { x: 0,   y: 24,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //2
-            lower_wall:  { x: 0,   y: -24, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //3
+            left_wall: { x: -24, y: 0, margin_x: 2, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            right_wall: { x: 24, y: 0, margin_x: 2, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            upper_wall: { x: 0,  y: 24,margin_x: 50,margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            lower_wall: { x: 0,  y: -24,margin_x: 50,margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
 
-            box1:        { x: 5,   y: -15, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //4
-            box2:        { x: -13, y: 4,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //5
-            box3:        { x: -10 + 3*Math.sin(this.t*3),                //6
-                                   y: -17, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            tree_stump1: { x: 20,  y: -8,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //7
-            tree_stump2: { x: 15,  y: 0,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //8
+            box1:      { x: 5, y: -15, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            box2:      { x: -13, y: 4, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            box3:      { x: -3 + 3*Math.sin(this.t*5), y: -8 /*+ 3*Math.cos(this.t*5)*/, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 15*Math.cos(this.t*5), velocity_y: 0,  draw: 1},      
 
-            tower1:      { x: 5,   y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},  //9
-            tower2:      { x: -5,  y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1}   //10
+            tree_stump1: { x: 20, y: -8, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            tree_stump2: { x: 15, y: 0,  margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+
+            tower1:    { x: 10/4, y: 30/4, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            tower2:    { x: -10/4,y: 30/4, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+
+            pointyboi: { x: -7, y: -6, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1}
+
         },
 
         // level 1 items
@@ -212,80 +260,134 @@ class Assignment_Two_Skeleton extends Scene_Component {
             tower1:      { x: 5,   y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
             tower2:      { x: -5,  y: 20,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
 
-            box01:       { x: 0,   y: 4,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box02:       { x: 5,   y: -8,  margin_x: 2,  margin_y: 26, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box03:       { x: -5,  y: -10, margin_x: 2,  margin_y: 30, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box04:       { x: 0 + 5*Math.sin(1*t),
-                                   y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box05:       { x: 0 + 5*Math.sin(1*t + Math.PI),
+            box01:       { x: 0,   y: -4,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box02:       { x: -5,  y: 7,   margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box03:       { x: 3,   y: 4,   margin_x: 14, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box04:       { x: 11,  y: 1,   margin_x: 2,  margin_y: 28, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box05:       { x: 0,   y: -12, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box06:       { x: -12, y: -1,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box07:       { x: -12, y: -1,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box08:       { x: -18 + 6*Math.sin(1.5*t),
+                                   y: 5,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box09:       { x: -18 + 6*Math.sin(1.5*t - 0.2),
+                                   y: 3,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box10:       { x: -18 + 6*Math.sin(1.5*t - 0.4),
+                                   y: 1,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box11:       { x: -18 + 6*Math.sin(1.5*t - 0.6),
+                                   y: -1,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box12:       { x: -18 + 6*Math.sin(1.5*t - 0.8),
+                                   y: -3,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box13:       { x: -18 + 6*Math.sin(1.5*t - 1),
+                                   y: -5,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box14:       { x: -18 + 6*Math.sin(1.5*t - 1.2),
+                                   y: -7,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box15:       { x: -18 + 6*Math.sin(1.5*t - 1.4),
                                    y: -9,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box06:       { x: 0 + 5*Math.sin(1*t),
-                                   y: -12, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box07:       { x: 0 + 5*Math.sin(1*t + Math.PI),
-                                   y: -15, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box08:       { x: 0 + 5*Math.sin(1*t),
-                                   y: -18, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box09:       { x: 15,  y: -16, margin_x: 2,  margin_y: 6,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box10:       { x: 15,  y: -5,  margin_x: 2,  margin_y: 7,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box11:       { x: 15,  y: 8,   margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box12:       { x: 10,  y: -20, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box13:       { x: 10,  y: -20 + 4*(t % 6), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box14:       { x: 10,  y: -20 + 4*((t + 4) % 6), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box15:       { x: 10,  y: -20 + 4*((t + 8) % 6), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box16:       { x: 10,  y: 4,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box17:       { x: 20,  y: -5,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box18:       { x: 20,  y: -24 + 4*((t + 2.5) % 9), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box19:       { x: 20,  y: -24 + 4*((t + 4.5) % 9), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box20:       { x: 20,  y: -24 + 4*((t + 6.5) % 9), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box21:       { x: 20,  y: -24 + 4*((t + 8.5) % 9), 
-                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box22:       { x: 8,   y: 18,  margin_x: 2,  margin_y: 14, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box23:       { x: -1,  y: 10,  margin_x: 20, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box24:       { x: -12, y: -4,  margin_x: 2,  margin_y: 30, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box25:       { x: -8.5,y: 10 - 5*((t + 4) % 6),
-                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box26:       { x: -8.5,y: 10 - 5*((t + 6) % 6),
-                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box27:       { x: -8.5,y: 10 - 5*((t + 8) % 6),
-                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-        },
-        ];
+            box16:       { x: -18 + 6*Math.sin(1.5*t - 1.6),
+                                   y: -11, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box17:       { x: -19, y: 14 + 4*Math.cos(1.5*t),
+                                           margin_x: 12, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box18:       { x: -1,  y: -19, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box19:       { x: -12, y: -18 + 3*Math.cos(1.5*t),
+                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box20:       { x: 11 , y: -18 - 3*Math.cos(1.5*t),
+                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box21:       { x: 16,  y: -10, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box22:       { x: 20,  y: -4 , margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box23:       { x: 16,  y: 2,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box24:       { x: 20,  y: 8,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box25:       { x: 16,  y: 14,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box26:       { x: 5,   y: 14,  margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box27:       { x: 18,  y: -18, margin_x: 4 + 2*Math.sin(t),  margin_y: 4 + 2*Math.sin(t), 
+                                                                       rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+        }
+
+
+
+
+         ];
+
+//       console.log("x: ", this.x_coord, "y: ", this.y_coord);
 
         // Compare the ball's current coordinates with those of the inanimate objects
         // If the ball is touching one of the inanimate objects, then the ball cannot move
         // through that object
-        
-//         for(var obj in object_coords[this.game_level]) {
-//             if(this.x_coord >= (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x) && this.x_coord <= (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x)) {            
-//                 if(this.y_coord >= (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y) && this.y_coord <= object_coords[this.game_level][obj].y) {
-//                     this.y_vel *= -1;
-//                     //check_up = false;
-//                 }
 
-//                 if(this.y_coord <= (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y) && this.y_coord >= object_coords[this.game_level][obj].y) {
-//                     this.y_vel *= -1;
-//                     //check_down = false;
-//                 }
-//             }
+        var col = this.yellow;
+        console.log(this.x_vel);
 
-//             if(this.y_coord >= (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y) && this.y_coord <= (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y)) {
-//                 if(this.x_coord >= (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x) && this.x_coord <= object_coords[this.game_level][obj].x) {
-//                     this.x_vel *= -1;
-//                     //check_right = false;
-//                 }
+        for(var obj in object_coords[this.game_level]) {
+            if(this.checkBallIntersect(object_coords[this.game_level][obj])) {
 
-//                 if(this.x_coord <= (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x) && this.x_coord >= object_coords[this.game_level][obj].x) {
-//                     this.x_vel *= -1;
-//                     //check_left = false;
-//                 }
-//             }
-//         }
+//                col = this.blue;                
+                object_coords[this.game_level][obj].x *= object_coords[this.game_level][obj].margin_x/2;
+                object_coords[this.game_level][obj].y *= object_coords[this.game_level][obj].margin_y/2;
+
+                // calculate bearing angle between ball and object (where 0 is defined as East)
+                const dx = this.x_coord - object_coords[this.game_level][obj].x;
+                const dy = this.y_coord - object_coords[this.game_level][obj].y;
+                var theta = (Math.atan2(dy,dx) - object_coords[this.game_level][obj].rotation)*(180/Math.PI);
+
+                // range of bearing angles of each face
+                // use to determine which face the ball hits
+                const y_angle = (Math.atan(object_coords[this.game_level][obj].margin_y/object_coords[this.game_level][obj].margin_x))*(180/Math.PI);
+                const x_angle = (Math.atan(object_coords[this.game_level][obj].margin_x/object_coords[this.game_level][obj].margin_y))*(180/Math.PI);
+
+                // determine the angle of direction of the ball
+//                 const kappa = 1e-1;
+//                 const phi = Math.atan(this.y_vel/(this.x_vel+kappa));
+
+//                 var face_angle;
+//                 var normal_x;
+//                 var normal_y;
+
+
+                // right face
+                if(theta > -y_angle && theta < y_angle) {
+                    this.x_vel = (-this.x_vel + 3*object_coords[this.game_level][obj].velocity_x);   
+//                     face_angle = 90 - object_coords[this.game_level][obj].rotation*(180/Math.PI);
+//                     normal_x = Math.sin(face_angle);
+//                     normal_y = Math.cos(face_angle);
+//                     console.log(face_angle);
+//                     this.x_vel = 2*normal_x;
+//                     this.y_vel = 2*normal_y;
+
+                }
+                // if the ball hits top face
+                else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
+                    this.y_vel = (-this.y_vel + 3*object_coords[this.game_level][obj].velocity_y);
+//                     face_angle = object_coords[this.game_level][obj].rotation;
+//                     normal_x = Math.sin(face_angle);
+//                     normal_y = Math.cos(face_angle);
+//                     this.x_vel = 2*normal_x;
+//                     this.y_vel = 2*normal_y;
+                }
+                // etc.
+                else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
+                    this.y_vel = (-this.y_vel - 3*object_coords[this.game_level][obj].velocity_y);
+//                     face_angle = object_coords[this.game_level][obj].rotation;
+//                     normal_x = Math.sin(face_angle);
+//                     normal_y = Math.cos(face_angle);
+//                     this.x_vel = 2*normal_x;
+//                     this.y_vel = -2*normal_y;                    
+                }
+                else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
+                    this.x_vel = (-this.x_vel - 3*object_coords[this.game_level][obj].velocity_x);
+//                     face_angle = 90 - object_coords[this.game_level][obj].rotation;
+//                     normal_x = Math.sin(face_angle);
+//                     normal_y = Math.cos(face_angle);
+//                     this.x_vel = -2*normal_x;
+//                     this.y_vel = 2*normal_y;                    
+                 }
+                 else {
+                    this.x_vel *= -1;
+                    this.y_vel *= -1;
+                 }
+                 
+                 object_coords[this.game_level][obj].x /= object_coords[this.game_level][obj].margin_x/2;
+                 object_coords[this.game_level][obj].y /= object_coords[this.game_level][obj].margin_y/2;
+            }
+        }
 
         // Create more parameters to deal with ball movement
         const delta_time = graphics_state.animation_delta_time / 1000;
@@ -315,36 +417,47 @@ class Assignment_Two_Skeleton extends Scene_Component {
         baseboard = baseboard.times(Mat4.scale(Vec.of(50, 50, 1)));
         this.shapes.simplebox.draw(graphics_state, baseboard, this.plastic.override({color: this.green}));
 
-        // Draw the four walls of the baseboard
+        // Draw the four walls of the baseboard (remains in all levels)
         for (var i = 0; i < 4; ++i)
         {
             this.shapes.simplebox.draw(graphics_state,
                 wall.times(Mat4.rotation(Math.PI/2 * (i > 1), Vec.of(0, 0, 1)))
-                    .times(Mat4.scale(Vec.of(50, 1, 4)))
-                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 1.25))), this.plastic.override({color: this.brown}));
+                    .times(Mat4.scale(Vec.of(50, 2, 4)))
+                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 24 : -24), 1.25))), this.plastic.override({color: this.brown}));
         }
 
-        // Draw castle gates:
-        this.shapes.castle.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].tower1.x*2, object_coords[0].tower1.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
-        this.shapes.castle.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].tower2.x*2, object_coords[0].tower2.y*2, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+        // Draw castle gates (remains in all levels):
+        this.shapes.castle.draw(graphics_state, 
+            Mat4.identity()
+                .times(Mat4.translation(Vec.of(object_coords[this.game_level].tower1.x*4, object_coords[this.game_level].tower1.y*4, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+        this.shapes.castle.draw(graphics_state, 
+            Mat4.identity()
+                .times(Mat4.translation(Vec.of(object_coords[this.game_level].tower2.x*4, object_coords[this.game_level].tower2.y*4, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
 
-        // Main ball that rolls around
-        this.shapes.ball.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))), this.plastic.override({color: this.lightgrey}));
+        // Main ball that rolls around (remains in all levels)
+        this.shapes.ball.draw(graphics_state, 
+                Mat4.identity()
+                    .times(Mat4.scale(2))
+                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))),
+                    this.plastic.override({color: this.lightgrey}));
 
-        // Only draw certain objects depending on the level
+        // Only draw certain objects depending on the game level
         if (this.game_level == 0)
         {
-            // level 0
-                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box1.x, object_coords[0].box1.y, this.z_coord))), this.plastic.override({color: this.brown}));
-                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box2.x, object_coords[0].box2.y, this.z_coord))), this.plastic.override({color: this.brown}));
-                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box3.x, object_coords[0].box3.y, this.z_coord))), this.plastic.override({color: this.brown}));                    
+        // level 0
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box1.x, object_coords[0].box1.y, this.z_coord))), this.plastic.override({color: this.brown}));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box2.x, object_coords[0].box2.y, this.z_coord))), this.plastic.override({color: this.brown}));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].box3.x, object_coords[0].box3.y, this.z_coord))), this.plastic.override({color: this.brown}));
 
-                // trees
-                this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[0].tree_stump1.x * 2, 4, object_coords[0].tree_stump1.y * -2))));
-                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].tree_stump1.x, object_coords[0].tree_stump1.y, this.z_coord))), this.plastic.override({color: this.brown}));
+            // trees
+            this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))                           .times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x * 2, 4, object_coords[this.game_level].tree_stump1.y * -2))));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, object_coords[this.game_level].tree_stump1.y, this.z_coord))), this.plastic.override({color: this.brown}));
 
-                this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[0].tree_stump2.x * 2, 4, object_coords[0].tree_stump2.y * -2))).times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
-                this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[0].tree_stump2.x, object_coords[0].tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));
+            this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x * 2, 4, object_coords[this.game_level].tree_stump2.y * -2))).times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.scale(2)).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x, object_coords[this.game_level].tree_stump2.y, this.z_coord))), this.plastic.override({color: this.brown}));
+
+            // object with flat shading
+            this.shapes.pointy_boi.draw(graphics_state, Mat4.identity().times(Mat4.scale(3)).times(Mat4.translation(Vec.of(object_coords[this.game_level].pointyboi.x, object_coords[this.game_level].pointyboi.y, 2))), this.plastic.override({color: this.lightgrey}));
         }
         else // we have level 1+
         {
@@ -353,19 +466,24 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 if (object_coords[this.game_level][obj].draw == 1)
                 {
                     this.shapes.simplebox.draw(graphics_state,
-                            Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level][obj].x*2, object_coords[this.game_level][obj].y*2, 2*this.z_coord))
-                            .times(Mat4.scale(Vec.of(object_coords[this.game_level][obj].margin_x, object_coords[this.game_level][obj].margin_y, 2)))), this.plastic.override({color: this.brown}));
+                            Mat4.identity()
+                            .times(Mat4.scale(2))
+                            .times(Mat4.translation(Vec.of(object_coords[this.game_level][obj].x, object_coords[this.game_level][obj].y, this.z_coord)))
+                            .times(Mat4.scale(Vec.of(object_coords[this.game_level][obj].margin_x/2, object_coords[this.game_level][obj].margin_y/2, 1)))
+                            , this.plastic.override({color: this.brown}))
                 }
             }
         }
 
-        if (this.y_coord > (object_coords[0].tower1.y) && this.x_coord < (object_coords[0].tower1.x) && this.x_coord > (object_coords[0].tower2.x))
+        // Level transitions
+        if (this.y_coord > (object_coords[0].tower1.y*2) && this.x_coord < (object_coords[0].tower1.x*2) && this.x_coord > (object_coords[0].tower2.x*2))
         {
             this.game_level += 1;
             this.x_coord = this.y_coord = this.x_vel = this.y_vel = this.x_acc = this.y_acc = 0;
-            if (this.game_level == 4) this.game_level = 0;
+            if (this.game_level == 3) this.game_level = 0;
         }
-        //graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
+
+        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
 
 
