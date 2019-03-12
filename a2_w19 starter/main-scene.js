@@ -1,3 +1,47 @@
+ //Returns a random number between min (inclusive) and max (exclusive)
+function getRandom(min, max) {
+    return Math.random() * (max - min) + min;
+}
+
+//particles class
+function Particle(x, y, z, life, vel) {
+           
+                this.x = x;
+                this.y = y;
+                this.z = z;
+                this.origin = { // where the particle started
+                    x: x,
+                    y: y ,
+                    z:z
+                }
+                this.life = life;
+                this.max_life = life; //particles original life will be its max life
+
+            	this.vel = vel;
+
+    Particle.prototype.update = function(hp) {
+    	this.life -= hp;
+    	if(this.life > 0) {
+    		this.z += this.vel
+    	}
+    };
+}
+// bezierclass  takes in 4 points and calculates the exact coordinates for the idx
+//https://www.moshplant.com/direct-or/bezier/math.html adapted from Bezier formulas shown on this page
+function Bezier(idx, p0, p1, p2, p3){
+  var cX = 3 * (p1.x - p0.x);
+  var bX = 3 * (p2.x - p1.x) - cX;
+  var aX = p3.x - p0.x - cX - bX;
+
+  var cY = 3 * (p1.y - p0.y);
+  var bY = 3 * (p2.y - p1.y) - cY;
+  var aY = p3.y - p0.y - cY - bY;
+ //x(t) = axt3 + bxt2 + cxt + x0
+  this.x = (aX * Math.pow(idx, 3)) + (bX * Math.pow(idx, 2)) + (cX * idx) + p0.x;
+  this.y = (aY * Math.pow(idx, 3)) + (bY * Math.pow(idx, 2)) + (cY * idx) + p0.y;
+  
+}
+
 class Assignment_Two_Skeleton extends Scene_Component {    
     // The scene begins by requesting the camera, shapes, and materials it will need.
     constructor(context, control_box) {
@@ -40,6 +84,45 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.up_ctrl = 0;
         this.down_ctrl = 0;
 
+
+
+        //particle effects
+        this.particles_left = [];
+        this.particles_right =  [];
+      
+        // set up all particles, these are the first two towers
+        this.n_particles = 300;
+        for(var i = 0; i < 50; i++){ // make the first 50 particles with low life so base stays strong
+            var castle1_x = getRandom(7,13);
+            var castle1_y = getRandom(30,36);
+	        this.particles_right.push(new Particle(castle1_x,castle1_y,9.6,20,.1)); // x y z life velocity
+	        this.particles_left.push(new Particle(castle1_x-20,castle1_y,9.6,20,.1)); 
+        }
+        for(var i = 0; i < this.n_particles-50; i++){
+            var temp_x = getRandom(7,13);
+            var temp_y = getRandom(30,36);
+	        this.particles_right.push(new Particle(temp_x,temp_y,9.6,75,.1)); 
+	        this.particles_left.push(new Particle(temp_x-20,temp_y,9.6,75,.1)); // x y z life velocity
+	        
+    	}
+
+    	// the points we want our bezier to scale from
+        var p0 = {x: 5, y: 4}; 
+	    var p1 = {x: 10, y: 10};
+	    var p2 = {x: 10, y: -5};
+	    var p3 = {x: 15, y: 20};
+	    //globals for bezier
+	    this.b_direction = 1; //swaps direction on the last point
+        this.global_bez = 0;
+        this.bez_max = 100; //only 100, fairly good accuracy for the curve
+        this.bez_array = [];
+		for (var i=0; i<1; i+=.01){
+   			  this.bez_array.push(new Bezier(i,p0,p1,p2,p3));
+  		}
+  		this.indicator = 1;
+
+
+
         // At the beginning of our program, load one of each of these shape
         // definitions onto the GPU.  NOTE:  Only do this ONCE per shape
         // design.  Once you've told the GPU what the design of a cube is,
@@ -69,9 +152,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shape_count = Object.keys(shapes).length;
 
         this.shapes.text_line.read_string("ISLAND MAZE");
-        this.shapes.level1_text_line.read_string("1");
-        this.shapes.level2_text_line.read_string("2");
-        this.shapes.level3_text_line.read_string("3");
+        this.shapes.level1_text_line.read_string("START");
+        this.shapes.level2_text_line.read_string("1");
+        this.shapes.level3_text_line.read_string("2");
         this.shapes.level4_text_line.read_string("Restart?");
         this.shapes.final_text_line.read_string("YOU WON:)");
 
@@ -137,6 +220,26 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.new_line();
         this.key_triggered_button("Move ball up", ["i"], ()=>this.up_ctrl = 1, undefined, ()=>this.up_ctrl = 0);
         this.key_triggered_button("Move ball down", ["k"], ()=>this.down_ctrl = 1, undefined, ()=>this.down_ctrl = 0);
+    }
+
+    draw_bezier(graphics_state){
+    	if(this.b_direction  == 1){
+        	this.global_bez += 1;
+		}
+        else{
+        	this.global_bez -= 1;
+        }
+
+        if(this.global_bez >= 99 ){
+        	this.b_direction = 0;
+        }
+        if(this.global_bez <= 0){
+        	this.b_direction = 1;
+        }
+        this.shapes.box.draw(graphics_state,
+        Mat4.translation(Vec.of(this.bez_array[this.global_bez].x,this.bez_array[this.global_bez].y,3))
+        .times(Mat4.scale(2)),
+		this.plastic.override({color: this.brown}) );
     }
 
 
@@ -545,6 +648,36 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box2.x, object_coords[0].box2.y, this.z_coord+2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
             this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box3.x, object_coords[0].box3.y, this.z_coord+2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
 
+        // fire particles
+            for(var i = 0; i < this.n_particles; i++){
+                if(this.particles_right[i].life < 0){
+                        this.particles_right[i].life =   Math.floor(Math.random() * Math.floor(this.particles_right[i].max_life));
+                        this.particles_right[i].x = this.particles_right[i].origin.x;
+
+                        this.particles_right[i].y   = this.particles_right[i].origin.y;
+                        this.particles_right[i].z = this.particles_right[i].origin.z;
+
+                this.particles_left[i].life = Math.floor(Math.random() * Math.floor(this.particles_right[i].max_life));
+
+                this.particles_left[i].x = this.particles_left[i].origin.x;
+
+                this.particles_left[i].y   = this.particles_left[i].origin.y;
+                this.particles_left[i].z = this.particles_left[i].origin.z;
+            }
+            else{
+                this.particles_right[i].update(1);
+                this.particles_left[i].update(1);
+            }
+            this.shapes['circle'].draw(graphics_state,
+            Mat4.translation(Vec.of(this.particles_right[i].x,this.particles_right[i].y,this.particles_right[i].z+10)).times(Mat4.scale(Vec.of(.35,.35,.35))),
+            this.shape_materials['circle']);
+            this.shapes['circle'].draw(graphics_state,
+            Mat4.translation(Vec.of(this.particles_left[i].x,this.particles_left[i].y,this.particles_left[i].z+10)).times(Mat4.scale(Vec.of(.35,.35,.35))),
+            this.shape_materials['circle']);
+            }
+
+
+
             // trees
             this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, 4, -object_coords[this.game_level].tree_stump1.y))));
             this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, object_coords[this.game_level].tree_stump1.y, this.z_coord + 2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
@@ -593,7 +726,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         {
             this.shapes.level1_text_line.draw(graphics_state,
                 Mat4.identity()
-                    .times(Mat4.translation(Vec.of(0, 30, 2)))    // z.axis = 2 for surface
+                    .times(Mat4.translation(Vec.of(-15, 30, 2)))    // z.axis = 2 for surface
                     .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
                     .times(Mat4.scale(5)), this.shape_materials['text_line']);
      
