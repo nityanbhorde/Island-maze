@@ -549,7 +549,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
                 // right face
                 if(theta > -y_angle && theta < y_angle) {
-                    this.x_vel = (-this.x_vel + 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (2 + 2*object_coords[this.game_level][obj].velocity_x);
                        console.log("right");   
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation*(180/Math.PI);
 //                     normal_x = Math.sin(face_angle);
@@ -561,7 +561,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // if the ball hits top face
                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-                    this.y_vel = (-this.y_vel + 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (2 + 2*object_coords[this.game_level][obj].velocity_y);
                     console.log("top");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -571,7 +571,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // etc.
                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel = (-this.y_vel - 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (-2 - 2*object_coords[this.game_level][obj].velocity_y);
                     console.log("bottom");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -580,7 +580,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                     this.y_vel = -2*normal_y;                    
                 }
                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
-                    this.x_vel = (-this.x_vel - 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (-2 - 2*object_coords[this.game_level][obj].velocity_x);
                     console.log("left");
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
