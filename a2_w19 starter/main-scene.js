@@ -56,8 +56,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'castle': new Castle(),
             'cylinder': new Cylinder(15),
             'cone': new Cone(20),
-            'ball': new Subdivision_Sphere(4),
-            'pointy_boi': new Pointy_boi(),
+            'ball': new Subdivision_Sphere(4)
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
@@ -196,8 +195,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
             tower1:    { x: 10, y: 30, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
             tower2:    { x: -10,y: 30, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
-
-            pointyboi: { x: -14, y: -16, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1}
 
         },
 
@@ -477,7 +474,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x, object_coords[this.game_level].tree_stump2.y, this.z_coord))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
 
             // object with flat shading
-            this.shapes.pointy_boi.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].pointyboi.x, object_coords[this.game_level].pointyboi.y, 2))).times(Mat4.scale(3)), this.plastic.override({color: this.lightgrey}));
         }
         else // we have level 1+
         {
