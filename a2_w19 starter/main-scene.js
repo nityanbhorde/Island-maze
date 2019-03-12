@@ -96,13 +96,13 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.n_particles = 300;
         for(var i = 0; i < 50; i++){ // make the first 50 particles with low life so base stays strong
             var castle1_x = getRandom(7,13);
-            var castle1_y = getRandom(30,36);
+            var castle1_y = getRandom(39,45);
 	        this.particles_right.push(new Particle(castle1_x,castle1_y,9.6,20,.1)); // x y z life velocity
 	        this.particles_left.push(new Particle(castle1_x-20,castle1_y,9.6,20,.1)); 
         }
         for(var i = 0; i < this.n_particles-50; i++){
             var temp_x = getRandom(7,13);
-            var temp_y = getRandom(30,36);
+            var temp_y = getRandom(39,45);
 	        this.particles_right.push(new Particle(temp_x,temp_y,9.6,75,.1)); 
 	        this.particles_left.push(new Particle(temp_x-20,temp_y,9.6,75,.1)); // x y z life velocity
 	        
