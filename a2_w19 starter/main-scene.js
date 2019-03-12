@@ -185,7 +185,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             simplebox: "assets/tetrahedron-texture2.png",
             cone: "assets/hypnosis.jpg",
             circle: "assets/hypnosis.jpg",
-            text_line: "assets/text.png"
+            text_line: "assets/text.png",
+            castle: "assets/stone.png",
         };
         for (let t in shape_textures)
             this.shape_materials[t] = this.texture_base.override({
@@ -637,10 +638,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Draw castle gates (remains in all levels):
         this.shapes.castle.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords[this.game_level].tower1.x, object_coords[this.game_level].tower1.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                .times(Mat4.translation(Vec.of(object_coords[this.game_level].tower1.x, object_coords[this.game_level].tower1.y, this.z_coord + 8))), this.shape_materials.castle || this.plastic.override({color: this.darkgrey}));
         this.shapes.castle.draw(graphics_state, 
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(object_coords[this.game_level].tower2.x, object_coords[this.game_level].tower2.y, this.z_coord + 8))), this.plastic.override({color: this.lightgrey}));
+                .times(Mat4.translation(Vec.of(object_coords[this.game_level].tower2.x, object_coords[this.game_level].tower2.y, this.z_coord + 8))), this.shape_materials.castle || this.plastic.override({color: this.darkgrey}));
 
         // Main ball that rolls around (remains in all levels)
         this.shapes.ball.draw(graphics_state, 
