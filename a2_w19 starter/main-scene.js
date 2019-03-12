@@ -186,7 +186,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             pyramid: "assets/tetrahedron-texture2.png",
             simplebox: "assets/tetrahedron-texture2.png",
             cone: "assets/hypnosis.jpg",
-            circle: "assets/hypnosis.jpg",
+            circle: "assets/fire.jpg",
             text_line: "assets/text.png",
             castle: "assets/stone.png",
         };
