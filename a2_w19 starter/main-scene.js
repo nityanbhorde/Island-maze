@@ -29,6 +29,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.y_acc = 0;
         this.z_acc = 0;
         
+        this.phi = 0;
+        
         // Does the user have control over movement in this axis?
         // They may not if the ball interacts with a spring, wall, etc.
         this.x_ctrl = 0;
@@ -388,6 +390,27 @@ class Assignment_Two_Skeleton extends Scene_Component {
               }
         }
 
+
+
+        // Create more parameters to deal with ball movement
+        const delta_time = graphics_state.animation_delta_time / 1000;
+        
+        // Acceleration with maximum velocity for controls
+        if (this.left_ctrl && this.x_vel > -10) this.x_vel += -10 * this.left_ctrl * delta_time;
+        if (this.right_ctrl && this.x_vel < 10) this.x_vel += 10 * this.right_ctrl * delta_time;
+        if (this.up_ctrl && this.y_vel < 10)    this.y_vel += 10 * this.up_ctrl * delta_time;
+        if (this.down_ctrl && this.y_vel > -10) this.y_vel += -10 * this.down_ctrl * delta_time;
+        this.x_vel += this.x_acc * delta_time;
+        this.y_vel += this.y_acc * delta_time;
+        
+        // Friction
+        this.x_vel *= 0.99;
+        this.y_vel *= 0.99;
+
+        //var old_vel = Math.sqrt(Math.pow(this.x_vel,2) + Math.pow(this.y_vel,2));
+        this.x_vel_old = this.x_vel;
+        this.y_vel_old = this.y_vel;
+        
         for(var obj in object_coords[this.game_level]) {
             if(this.checkBallIntersect(object_coords[this.game_level][obj])) {
                 /*if (Math.sqrt(Math.pow(this.x_acc,2) + Math.pow(this.y_acc,2)) > 7)
@@ -396,8 +419,6 @@ class Assignment_Two_Skeleton extends Scene_Component {
                     x.play();
                 }
                 */
-
-                var old_vel = Math.sqrt(Math.pow(this.x_vel,2) + Math.pow(this.y_vel,2));
     
                 console.log("collide");
 //                col = this.blue;                
@@ -425,7 +446,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
                 // right face
                 if(theta > -y_angle && theta < y_angle) {
-                    this.x_vel = (1 + 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (-this.x_vel + 2*object_coords[this.game_level][obj].velocity_x);
                        console.log("right");   
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation*(180/Math.PI);
 //                     normal_x = Math.sin(face_angle);
@@ -437,7 +458,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // if the ball hits top face
                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-                    this.y_vel = (1 + 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (-this.y_vel + 2*object_coords[this.game_level][obj].velocity_y);
                     console.log("top");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -447,7 +468,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // etc.
                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel = (-1 - 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (-this.y_vel - 2*object_coords[this.game_level][obj].velocity_y);
                     console.log("bottom");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -456,7 +477,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                     this.y_vel = -2*normal_y;                    
                 }
                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
-                    this.x_vel = (-1 - 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (-this.x_vel - 2*object_coords[this.game_level][obj].velocity_x);
                     console.log("left");
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -469,10 +490,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
                    this.y_vel *= -1;
                 }
 
-                var new_vel = Math.sqrt(Math.pow(this.x_vel,2) + Math.pow(this.y_vel,2));
-                var vel_diff = old_vel - new_vel;
+                var vel_diff = Math.sqrt(Math.pow(this.x_vel - this.x_vel_old,2) + Math.pow(this.y_vel - this.y_vel_old,2));
+                //var vel_diff = old_vel - new_vel;
 
-                if (Math.abs(vel_diff) > 2)
+                if (Math.abs(vel_diff) > 1)
                 {
                     var x = new Audio("assets/bat+hit+ball.wav"); 
                     x.play();
@@ -483,25 +504,13 @@ class Assignment_Two_Skeleton extends Scene_Component {
                  object_coords[this.game_level][obj].y *= 2;//object_coords[this.game_level][obj].margin_y/2;
             }
         }
-
-        // Create more parameters to deal with ball movement
-        const delta_time = graphics_state.animation_delta_time / 1000;
-        
-        // Acceleration with maximum velocity for controls
-        if (this.left_ctrl && this.x_vel > -10) this.x_vel += -10 * this.left_ctrl * delta_time;
-        if (this.right_ctrl && this.x_vel < 10) this.x_vel += 10 * this.right_ctrl * delta_time;
-        if (this.up_ctrl && this.y_vel < 10)    this.y_vel += 10 * this.up_ctrl * delta_time;
-        if (this.down_ctrl && this.y_vel > -10) this.y_vel += -10 * this.down_ctrl * delta_time;
-        this.x_vel += this.x_acc * delta_time;
-        this.y_vel += this.y_acc * delta_time;
-        
-        // Friction
-        this.x_vel *= 0.99;
-        this.y_vel *= 0.99;
         
         // Velocity
         this.x_coord += this.x_vel * delta_time;
         this.y_coord += this.y_vel * delta_time;
+        
+        this.my_cross = Vec.of(0, 0, 1).cross(Vec.of(this.x_vel, this.y_vel, 0));
+        this.phi += Math.sqrt(Math.pow(this.x_vel * delta_time, 2) + Math.pow(this.y_vel * delta_time, 2)) / 2;
 
         // Draw the basic map scene centered at the origin
         // The plane of the board faces the positive Z direction
@@ -534,8 +543,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.ball.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))),
-                    this.plastic.override({color: this.lightgrey}));
+                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord)))
+                    .times(Mat4.rotation(this.phi, this.my_cross)),
+                    this.shape_materials.ball || this.plastic.override({color: this.lightgrey}));
 
         // Only draw certain objects depending on the game level
         if (this.game_level == 0)
@@ -638,7 +648,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         }
         
 
-        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
+        graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord*2, (this.y_coord - 30)*2, (this.z_coord + 30)*2), Vec.of(this.x_coord*2, this.y_coord*2, this.z_coord*2), Vec.of(0, 0, 1));
     }
 
 
