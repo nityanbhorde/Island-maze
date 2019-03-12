@@ -93,7 +93,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.particles_right =  [];
       
         // set up all particles, these are the first two towers
-        this.n_particles = 300;
+        this.n_particles = 200;
         for(var i = 0; i < 50; i++){ // make the first 50 particles with low life so base stays strong
             var castle1_x = getRandom(7,13);
             var castle1_y = getRandom(39,45);
@@ -109,10 +109,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
     	}
 
     	// the points we want our bezier to scale from
-        var p0 = {x: 5, y: 4}; 
-	    var p1 = {x: 10, y: 10};
-	    var p2 = {x: 10, y: -5};
-	    var p3 = {x: 15, y: 20};
+        var p0 = {x: -40, y: -40}; 
+	    var p1 = {x: -30, y: 10};
+	    var p2 = {x: -20, y: -35};
+	    var p3 = {x: 0, y: -30};
 	    //globals for bezier
 	    this.b_direction = 1; //swaps direction on the last point
         this.global_bez = 0;
@@ -317,7 +317,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
             tower1:    { x: 10, y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
             tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
 
-            pointyboi: { x: -14, y: -16, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1}
+            pointyboi: { x: -14, y: -16, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            bezier_box:    { x: this.bez_array[this.global_bez].x,y: this.bez_array[this.global_bez].y, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            
 
         },
 
@@ -680,14 +682,14 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 this.particles_left[i].update(1);
             }
             this.shapes['circle'].draw(graphics_state,
-            Mat4.translation(Vec.of(this.particles_right[i].x,this.particles_right[i].y,this.particles_right[i].z+10)).times(Mat4.scale(Vec.of(.35,.35,.35))),
+            Mat4.translation(Vec.of(this.particles_right[i].x,this.particles_right[i].y,this.particles_right[i].z+10)).times(Mat4.scale(Vec.of(.5,.5,.5))),
             this.shape_materials['circle']);
             this.shapes['circle'].draw(graphics_state,
-            Mat4.translation(Vec.of(this.particles_left[i].x,this.particles_left[i].y,this.particles_left[i].z+10)).times(Mat4.scale(Vec.of(.35,.35,.35))),
+            Mat4.translation(Vec.of(this.particles_left[i].x,this.particles_left[i].y,this.particles_left[i].z+10)).times(Mat4.scale(Vec.of(.5,.5,.5))),
             this.shape_materials['circle']);
             }
 
-
+           this.draw_bezier(graphics_state);
 
             // trees
             this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, 4, -object_coords[this.game_level].tree_stump1.y))));
