@@ -55,9 +55,12 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'cone': new Cone(20),
             'ball': new Subdivision_Sphere(4),
             'pointy_boi': new Pointy_boi(),
+            'text_line': new Text_Line(20),
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
+
+        this.shapes.text_line.read_string("ISLAND MAZE");
 
         // Make some Material objects available to you:
         this.clay = context.get_instance(Phong_Shader).material(Color.of(.9, .5, .9, 1), {
@@ -83,7 +86,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             pyramid: "assets/tetrahedron-texture2.png",
             simplebox: "assets/tetrahedron-texture2.png",
             cone: "assets/hypnosis.jpg",
-            circle: "assets/hypnosis.jpg"
+            circle: "assets/hypnosis.jpg",
+            text_line: "assets/text.png"
         };
         for (let t in shape_textures)
             this.shape_materials[t] = this.texture_base.override({
@@ -484,6 +488,14 @@ class Assignment_Two_Skeleton extends Scene_Component {
             this.x_coord = this.y_coord = this.x_vel = this.y_vel = this.x_acc = this.y_acc = 0;
             if (this.game_level == 3) this.game_level = 0;
         }
+
+        // Draw text line:
+        this.shapes.text_line.draw(graphics_state,
+            Mat4.identity()
+                .times(Mat4.translation(Vec.of(-37, 45, 20)))    // z.axis = 2 for surface
+                .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
+                .times(Mat4.scale(5)), this.shape_materials['text_line']);
+        
 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
     }
