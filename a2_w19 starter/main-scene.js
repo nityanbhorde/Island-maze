@@ -137,7 +137,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shape_count = Object.keys(shapes).length;
 
 
-        this.shapes.text_line.set_string("ISLAND MAZE");
+        this.shapes.text_line.read_string("ISLAND MAZE");
 
         // Make some Material objects available to you:
         this.clay = context.get_instance(Phong_Shader).material(Color.of(.9, .5, .9, 1), {
