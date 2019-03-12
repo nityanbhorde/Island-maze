@@ -148,6 +148,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'level2_text_line': new Text_Line(20),
             'level3_text_line': new Text_Line(20),
             'level4_text_line': new Text_Line(20),
+            'level5_text_line': new Text_Line(20),
             'final_text_line': new Text_Line(20),
         }
         this.submit_shapes(context, shapes);
@@ -157,7 +158,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.level1_text_line.read_string("START");
         this.shapes.level2_text_line.read_string("1");
         this.shapes.level3_text_line.read_string("2");
-        this.shapes.level4_text_line.read_string("Restart?");
+        this.shapes.level4_text_line.read_string("3");
+        this.shapes.level5_text_line.read_string("Restart?");
         this.shapes.final_text_line.read_string("YOU WON!");
 
         // Make some Material objects available to you:
@@ -464,6 +466,21 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // level 3 items
         {
+            left_wall:   { x: -48, y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            right_wall:  { x: 48,  y: 0,   margin_x: 1,  margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            upper_wall:  { x: 0,   y: 48,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            lower_wall:  { x: 0,   y: -48, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+
+            tower1:    { x: 10, y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
+            tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
+
+            box01:       { x: 0,   y: 8,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box02:       { x: 0,   y: -8,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            
+        },
+
+        // level 4 items
+        {
             left_wall: { x: -49, y: 0, margin_x: 1, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
             right_wall: { x: 49, y: 0, margin_x: 1, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
             upper_wall: { x: 0,  y: 49,margin_x: 50,margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
@@ -616,7 +633,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.x_coord += this.x_vel * delta_time;
         this.y_coord += this.y_vel * delta_time;
         
-        this.my_cross = Vec.of(0, 0, 1).cross(Vec.of(this.x_vel, this.y_vel, 0));
+        this.my_cross = Vec.of(0, 0, 1).cross(Vec.of(this.x_vel + 0.001, this.y_vel + 0.001, 0.001));
         this.phi += Math.sqrt(Math.pow(this.x_vel * delta_time, 2) + Math.pow(this.y_vel * delta_time, 2)) / 2;
 
         // Draw the basic map scene centered at the origin
@@ -722,7 +739,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
         {
             this.game_level += 1;
             this.x_coord = this.y_coord = this.x_vel = this.y_vel = this.x_acc = this.y_acc = 0;
-            if (this.game_level == 4) 
+
+            // Delete this line of code if you finish level 3
+            if (this.game_level == 3) this.game_level = 4;
+            if (this.game_level == 5) 
             {
                 this.game_level = 0;
                 this.cheer_temp = 0
@@ -770,13 +790,22 @@ class Assignment_Two_Skeleton extends Scene_Component {
         }
         else if (this.game_level == 3)
         {
+            this.shapes.level4_text_line.draw(graphics_state,
+                Mat4.identity()
+                    .times(Mat4.translation(Vec.of(0, 30, 2)))    // z.axis = 2 for surface
+                    .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
+                    .times(Mat4.scale(5)), this.shape_materials['text_line']);
+     
+        }
+        else if (this.game_level == 4)
+        {
             if (this.cheer_temp == 0)
             {
                 var x = new Audio("assets/cheer.wav"); 
                 x.play();  
                 this.cheer_temp = 1;  
             }
-            this.shapes.level4_text_line.draw(graphics_state,
+            this.shapes.level5_text_line.draw(graphics_state,
                 Mat4.identity()
                     .times(Mat4.translation(Vec.of(-15, 30, 2)))    // z.axis = 2 for surface
                     .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
