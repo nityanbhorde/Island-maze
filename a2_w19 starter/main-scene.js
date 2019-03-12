@@ -317,7 +317,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         for(var obj in object_coords[this.game_level]) {
             if(this.checkBallIntersect(object_coords[this.game_level][obj])) {
-
+                console.log("collide");
 //                col = this.blue;                
                 object_coords[this.game_level][obj].x /= 2;//object_coords[this.game_level][obj].margin_x/2;
                 object_coords[this.game_level][obj].y /= 2;//object_coords[this.game_level][obj].margin_y/2;
@@ -343,7 +343,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
                 // right face
                 if(theta > -y_angle && theta < y_angle) {
-                    this.x_vel = (-this.x_vel + 2*object_coords[this.game_level][obj].velocity_x);   
+                    this.x_vel = (5 + 2*object_coords[this.game_level][obj].velocity_x);
+                       console.log("right");   
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation*(180/Math.PI);
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -354,7 +355,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // if the ball hits top face
                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-                    this.y_vel = (-this.y_vel + 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (5 + 2*object_coords[this.game_level][obj].velocity_y);
+                    console.log("top");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -363,7 +365,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // etc.
                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel = (-this.y_vel - 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (-5 - 2*object_coords[this.game_level][obj].velocity_y);
+                    console.log("bottom");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
@@ -371,17 +374,18 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                     this.y_vel = -2*normal_y;                    
                 }
                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
-                    this.x_vel = (-this.x_vel - 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (-5 - 2*object_coords[this.game_level][obj].velocity_x);
+                    console.log("left");
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
 //                     normal_y = Math.cos(face_angle);
 //                     this.x_vel = -2*normal_x;
 //                     this.y_vel = 2*normal_y;                    
                  }
-                 else {
-                    this.x_vel *= -1;
-                    this.y_vel *= -1;
-                 }
+                else {
+                   this.x_vel *= -1;
+                   this.y_vel *= -1;
+                }
                  
                  object_coords[this.game_level][obj].x *= 2;//object_coords[this.game_level][obj].margin_x/2;
                  object_coords[this.game_level][obj].y *= 2;//object_coords[this.game_level][obj].margin_y/2;
