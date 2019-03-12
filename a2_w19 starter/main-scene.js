@@ -158,7 +158,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.level2_text_line.read_string("1");
         this.shapes.level3_text_line.read_string("2");
         this.shapes.level4_text_line.read_string("Restart?");
-        this.shapes.final_text_line.read_string("YOU WON:)");
+        this.shapes.final_text_line.read_string("YOU WON!");
 
         // Make some Material objects available to you:
         this.clay = context.get_instance(Phong_Shader).material(Color.of(.9, .5, .9, 1), {
@@ -199,6 +199,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.yellow = Color.of(1, 1, 0, 1);
         this.red = Color.of(1, 0, 0, 1);
         this.green = Color.of(0, 1, 0, 1);
+        this.orange = Color.of(1, 0.5, 0.15, 1);
         this.brown = Color.of(0.725, 0.478, 0.341, 1);
         this.darkgrey = Color.of(0.5, 0.5, 0.5, 1);
         this.lightgrey = Color.of(0.75, 0.75, 0.75, 1);
@@ -213,9 +214,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
     // Draw the scene's buttons, setup their actions and keyboard shortcuts, and monitor live measurements.
     make_control_panel() {
-        this.key_triggered_button("Pause Time", ["n"], () => {
-            this.paused = !this.paused;
-        });
+//         this.key_triggered_button("Pause Time", ["n"], () => {
+//             this.paused = !this.paused;
+//         });
         this.new_line();this.new_line();
         this.control_panel.innerHTML += "Move the ball using the following buttons:<br>";
         this.key_triggered_button("Move ball left", ["j"], ()=>this.left_ctrl = 1, undefined, ()=>this.left_ctrl = 0);
@@ -318,7 +319,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
             tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
 
             pointyboi: { x: -14, y: -16, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
-            bezier_box:    { x: this.bez_array[this.global_bez].x,y: this.bez_array[this.global_bez].y, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            bezier_box:    { x: this.bez_array[this.global_bez].x,y: this.bez_array[this.global_bez].y, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 5, velocity_y: 5,  draw: 1},
             
 
         },
@@ -730,18 +731,23 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         // Draw text line:
         this.shapes.text_line.draw(graphics_state,
-            Mat4.identity()
-                .times(Mat4.translation(Vec.of(-37, 55, 20)))    // z.axis = 2 for surface
-                .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
-                .times(Mat4.scale(5)), this.shape_materials['text_line']);
+            (this.game_level == 0) ? Mat4.identity().times(Mat4.translation(Vec.of(-37, 20, 1.1))).times(Mat4.scale(5))
+            : Mat4.identity().times(Mat4.translation(Vec.of(-37, 55, 20))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.scale(5))
+                , this.shape_materials['text_line']);
+
+
+//                 .times(Mat4.translation(Vec.of(-37, 55, 20))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.scale(5)), this.shape_materials['text_line']);
+// ((i % 2) ? 49 : -49)
+
+
 
         if (this.game_level == 0)
         {
             this.shapes.level1_text_line.draw(graphics_state,
                 Mat4.identity()
-                    .times(Mat4.translation(Vec.of(-15, 30, 2)))    // z.axis = 2 for surface
+                    .times(Mat4.translation(Vec.of(-6, 33, 2)))    // z.axis = 2 for surface
                     .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
-                    .times(Mat4.scale(5)), this.shape_materials['text_line']);
+                    .times(Mat4.scale(2)), this.shape_materials['text_line']);
      
         }
         else if (this.game_level == 1)
@@ -772,9 +778,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
             }
             this.shapes.level4_text_line.draw(graphics_state,
                 Mat4.identity()
-                    .times(Mat4.translation(Vec.of(-20, 30, 2)))    // z.axis = 2 for surface
+                    .times(Mat4.translation(Vec.of(-15, 30, 2)))    // z.axis = 2 for surface
                     .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
-                    .times(Mat4.scale(5)), this.shape_materials['text_line']);
+                    .times(Mat4.scale(3)), this.shape_materials['text_line']);
     
             this.shapes.final_text_line.draw(graphics_state,
                 Mat4.identity()
