@@ -56,11 +56,17 @@ class Assignment_Two_Skeleton extends Scene_Component {
             'ball': new Subdivision_Sphere(4),
             'pointy_boi': new Pointy_boi(),
             'text_line': new Text_Line(20),
+            'level1_text_line': new Text_Line(20),
+            'level2_text_line': new Text_Line(20),
+            'final_text_line': new Text_Line(20),
         }
         this.submit_shapes(context, shapes);
         this.shape_count = Object.keys(shapes).length;
 
         this.shapes.text_line.read_string("ISLAND MAZE");
+        this.shapes.level1_text_line.read_string("1");
+        this.shapes.level2_text_line.read_string("2");
+        this.shapes.final_text_line.read_string("YOU WON");
 
         // Make some Material objects available to you:
         this.clay = context.get_instance(Phong_Shader).material(Color.of(.9, .5, .9, 1), {
@@ -183,10 +189,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
         const object_coords = [
         // level 0 items
         {
-            left_wall: { x: -48, y: 0, margin_x: 2, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            right_wall: { x: 48, y: 0, margin_x: 2, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
-            upper_wall: { x: 0,  y: 48,margin_x: 50,margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
-            lower_wall: { x: 0,  y: -48,margin_x: 50,margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            left_wall: { x: -49, y: 0, margin_x: 1, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            right_wall: { x: 49, y: 0, margin_x: 1, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            upper_wall: { x: 0,  y: 49,margin_x: 50,margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
+            lower_wall: { x: 0,  y: -49,margin_x: 50,margin_y: 1, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
 
             box1:      { x: 10, y: -30, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
             box2:      { x: -26, y: 8, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1 },
@@ -195,8 +201,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             tree_stump1: { x: 40, y: -16, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
             tree_stump2: { x: 40, y: 0,  margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
 
-            tower1:    { x: 10, y: 30, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
-            tower2:    { x: -10,y: 30, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            tower1:    { x: 10, y: 40, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            tower2:    { x: -10,y: 40, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
 
             pointyboi: { x: -14, y: -16, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1}
 
@@ -213,29 +219,29 @@ class Assignment_Two_Skeleton extends Scene_Component {
             tower2:      { x: -10,  y: 40,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
 
             box01:       { x: 0,   y: -8,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box02:       { x: -10,  y: 14,   margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box02:       { x: -10, y: 14,   margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box03:       { x: 6,   y: 8,   margin_x: 14, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box04:       { x: 22,  y: 2,   margin_x: 2,  margin_y: 28, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box05:       { x: 0,   y: -24, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box06:       { x: -24, y: -2,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
 //            box07:       { x: -2, y: -2,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box08:       { x: -36 + 12*Math.sin(1.5*t),
+            box08:       { x: -36 + 8*Math.sin(1.5*t),
                                    y: 10,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box09:       { x: -36 + 12*Math.sin(1.5*t + 0.2),
+            box09:       { x: -36 + 8*Math.sin(1.5*t + 0.2),
                                    y: 6,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box10:       { x: -36 + 12*Math.sin(1.5*t + 0.4),
+            box10:       { x: -36 + 8*Math.sin(1.5*t + 0.4),
                                    y: 2,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box11:       { x: -36 + 12*Math.sin(1.5*t + 0.6),
+            box11:       { x: -36 + 8*Math.sin(1.5*t + 0.6),
                                    y: -2,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box12:       { x: -36 + 12*Math.sin(1.5*t + 0.8),
+            box12:       { x: -36 + 8*Math.sin(1.5*t + 0.8),
                                    y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box13:       { x: -36 + 12*Math.sin(1.5*t + 1),
+            box13:       { x: -36 + 8*Math.sin(1.5*t + 1),
                                    y: -10,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box14:       { x: -36 + 12*Math.sin(1.5*t + 1.2),
+            box14:       { x: -36 + 8*Math.sin(1.5*t + 1.2),
                                    y: -14,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box15:       { x: -36 + 12*Math.sin(1.5*t + 1.4),
+            box15:       { x: -36 + 8*Math.sin(1.5*t + 1.4),
                                    y: -18,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box16:       { x: -36 + 6*Math.sin(1.5*t + 1.6),
+            box16:       { x: -36 + 8*Math.sin(1.5*t + 1.6),
                                    y: -22, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
             box17:       { x: -38, y: 28 + 8*Math.cos(1.5*t + 1.8),
                                            margin_x: 12, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
@@ -319,6 +325,16 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         var col = this.yellow;
 
+        for(var obj in object_coords[this.game_level])
+        {
+            if  ((this.x_coord*2 > (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x/2 - 0.1)
+              && (this.x_coord*2 < (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x/2 + 0.1))
+              && (this.y_coord*2 > (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y/2 - 0.1))
+              && (this.y_coord*2 < (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y/2 + 0.1)))
+              || (this.x_coord*2 > 49 || this.x_coord*2 < -49 || this.y_coord*2 > 49 || this.y_coord*2 < -49))
+              this.y_coord = this.x_coord = this.y_vel = this.x_vel = 0;
+        }
+
         for(var obj in object_coords[this.game_level]) {
             if(this.checkBallIntersect(object_coords[this.game_level][obj])) {
                 console.log("collide");
@@ -347,7 +363,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
                 // right face
                 if(theta > -y_angle && theta < y_angle) {
-                    this.x_vel = (5 + 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (1 + 2*object_coords[this.game_level][obj].velocity_x);
                        console.log("right");   
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation*(180/Math.PI);
 //                     normal_x = Math.sin(face_angle);
@@ -359,7 +375,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // if the ball hits top face
                 else if(theta > y_angle && theta < (y_angle + 2*x_angle)) {
-                    this.y_vel = (5 + 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (1 + 2*object_coords[this.game_level][obj].velocity_y);
                     console.log("top");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -369,7 +385,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 }
                 // etc.
                 else if(theta < -y_angle && theta > (-y_angle - 2*x_angle)) {
-                    this.y_vel = (-5 - 2*object_coords[this.game_level][obj].velocity_y);
+                    this.y_vel = (-1 - 2*object_coords[this.game_level][obj].velocity_y);
                     console.log("bottom");
 //                     face_angle = object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -378,7 +394,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
 //                     this.y_vel = -2*normal_y;                    
                 }
                 else if(theta < (-y_angle - 2*x_angle) || theta > (y_angle + 2*x_angle)) {                    
-                    this.x_vel = (-5 - 2*object_coords[this.game_level][obj].velocity_x);
+                    this.x_vel = (-1 - 2*object_coords[this.game_level][obj].velocity_x);
                     console.log("left");
 //                     face_angle = 90 - object_coords[this.game_level][obj].rotation;
 //                     normal_x = Math.sin(face_angle);
@@ -429,8 +445,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         {
             this.shapes.simplebox.draw(graphics_state,
                 wall.times(Mat4.rotation(Math.PI/2 * (i > 1), Vec.of(0, 0, 1)))
-                    .times(Mat4.scale(Vec.of(50, 2, 4)))
-                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 24 : -24), 1.25))), this.plastic.override({color: this.brown}));
+                    .times(Mat4.translation(Vec.of(0, ((i % 2) ? 49 : -49), 5)))
+                    .times(Mat4.scale(Vec.of(50, 1, 4)))
+                    , this.plastic.override({color: this.brown}));
         }
 
         // Draw castle gates (remains in all levels):
@@ -452,19 +469,19 @@ class Assignment_Two_Skeleton extends Scene_Component {
         if (this.game_level == 0)
         {
         // level 0
-            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box1.x, object_coords[0].box1.y, this.z_coord))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
-            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box2.x, object_coords[0].box2.y, this.z_coord))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
-            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box3.x, object_coords[0].box3.y, this.z_coord))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box1.x, object_coords[0].box1.y, this.z_coord+2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box2.x, object_coords[0].box2.y, this.z_coord+2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[0].box3.x, object_coords[0].box3.y, this.z_coord+2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
 
             // trees
-            this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x - 1, 4, -object_coords[this.game_level].tree_stump1.y + 3/2))));
-            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, object_coords[this.game_level].tree_stump1.y, this.z_coord))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
+            this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, 4, -object_coords[this.game_level].tree_stump1.y))));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump1.x, object_coords[this.game_level].tree_stump1.y, this.z_coord + 2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
 
-            this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x - 1, 4, object_coords[this.game_level].tree_stump2.y + 2))).times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
-            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x, object_coords[this.game_level].tree_stump2.y, this.z_coord))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
+            this.draw_tree(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(0, 0, 2))).times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0))).times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x, 4, object_coords[this.game_level].tree_stump2.y))).times(Mat4.rotation(Math.PI, Vec.of(0, 1, 0))));
+            this.shapes.simplebox.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].tree_stump2.x, object_coords[this.game_level].tree_stump2.y, this.z_coord + 2))).times(Mat4.scale(2)), this.plastic.override({color: this.brown}));
 
             // object with flat shading
-            this.shapes.pointy_boi.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].pointyboi.x, object_coords[this.game_level].pointyboi.y, 2))).times(Mat4.scale(3)), this.plastic.override({color: this.lightgrey}));
+            this.shapes.pointy_boi.draw(graphics_state, Mat4.identity().times(Mat4.translation(Vec.of(object_coords[this.game_level].pointyboi.x, object_coords[this.game_level].pointyboi.y, 4))).times(Mat4.scale(3)), this.plastic.override({color: this.lightgrey}));
         }
         else // we have level 1+
         {
@@ -474,7 +491,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
                 {
                     this.shapes.simplebox.draw(graphics_state,
                             Mat4.identity()
-                            .times(Mat4.translation(Vec.of(object_coords[this.game_level][obj].x, object_coords[this.game_level][obj].y, this.z_coord)))
+                            .times(Mat4.translation(Vec.of(object_coords[this.game_level][obj].x, object_coords[this.game_level][obj].y, this.z_coord + 2)))
                             .times(Mat4.scale(Vec.of(object_coords[this.game_level][obj].margin_x, object_coords[this.game_level][obj].margin_y, 2)))
                             , this.plastic.override({color: this.brown}))
                 }
@@ -492,9 +509,28 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Draw text line:
         this.shapes.text_line.draw(graphics_state,
             Mat4.identity()
-                .times(Mat4.translation(Vec.of(-37, 45, 20)))    // z.axis = 2 for surface
+                .times(Mat4.translation(Vec.of(-37, 50, 20)))    // z.axis = 2 for surface
                 .times(Mat4.rotation(Math.PI/2, Vec.of(1, 0, 0)))
                 .times(Mat4.scale(5)), this.shape_materials['text_line']);
+
+        if (this.game_level == 0)
+        {
+            this.shapes.level1_text_line.draw(graphics_state,
+                Mat4.identity()
+                    .times(Mat4.translation(Vec.of(0, 30, 2)))    // z.axis = 2 for surface
+                    .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
+                    .times(Mat4.scale(5)), this.shape_materials['text_line']);
+     
+        }
+        else if (this.game_level == 1)
+        {
+            this.shapes.level2_text_line.draw(graphics_state,
+                Mat4.identity()
+                    .times(Mat4.translation(Vec.of(0, 30, 2)))    // z.axis = 2 for surface
+                    .times(Mat4.rotation(Math.PI/2 * 0, Vec.of(1, 0, 0)))
+                    .times(Mat4.scale(5)), this.shape_materials['text_line']);
+     
+        }
         
 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
