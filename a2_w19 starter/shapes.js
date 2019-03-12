@@ -562,37 +562,44 @@ window.Subdivision_Sphere = window.classes.Subdivision_Sphere = class Subdivisio
     }
 }
 
-// Text_Line embeds text in the 3D world, using a crude texture method. Learned from Jeffery Zhu.
+// Image file from Jeffery Zhu.
 
 window.Text_Line = window.classes.Text_Line = 
 class Text_Line extends Shape                       
 {                                                   
-  constructor( max_size )                           
-    { super( "positions", "normals", "texture_coords" );
-      this.max_size = max_size;
-      var object_transform = Mat4.identity();
-      for( var i = 0; i < max_size; i++ )
-      { Square.insert_transformed_copy_into( this, [], object_transform );
-        object_transform.post_multiply( Mat4.translation([ 1.5,0,0 ]) );
-      }
+    constructor( max_size )                           
+    { 
+        super( "positions", "normals", "texture_coords" );
+        
+        this.max_size = max_size;
+        var object_transform = Mat4.identity();
+        for( var i = 0; i < max_size; i++ )
+        { 
+            Square.insert_transformed_copy_into( this, [], object_transform );
+            object_transform.post_multiply( Mat4.translation(Vec.of(1.5, 0, 0)) );
+        }
     }
-  read_string( str, gl = this.gl )
-    { this.texture_coords = [];
-      for( var i = 0; i < this.max_size; i++ )
+    read_string( str, gl = this.gl )
+    { 
+        this.texture_coords = [];
+        for( var i = 0; i < this.max_size; i++ )
         {
-          // dividing the texture map into individual characters  
-          var r = Math.floor( ( i < str.length ? str.charCodeAt( i ) : ' '.charCodeAt() ) / 16 ),
-              c = Math.floor( ( i < str.length ? str.charCodeAt( i ) : ' '.charCodeAt() ) % 16 );
+            // dividing the texture map into individual characters
+            var r = Math.floor( ( i < str.length ? str.charCodeAt( i ) : ' '.charCodeAt() ) / 16 );
+            var c = Math.floor( ( i < str.length ? str.charCodeAt( i ) : ' '.charCodeAt() ) % 16 );
 
-          var pass = 3;
-          var size = 32;
-          var size_floor = size - pass;
+            var pass = 3;
+            var size = 32;
+            var size_floor = size - pass;
 
-          // traversing through the characters, selecting appropriate sub-image to render
-          var dim = size * 16,  left  = (c * size + pass) / dim,      top    = (r * size + pass) / dim,
-                                right = (c * size + size_floor) / dim, bottom = (r * size + size_floor + 5) / dim;
+            // selecting the coordinates of the appropriate sub-image to render
+            var dim = size * 16;  
+            var left  = (c * size + pass) / dim;        
+            var top    = (r * size + pass) / dim;
+            var right = (c * size + size_floor) / dim;  
+            var bottom = (r * size + size_floor + 5) / dim;
 
-          this.texture_coords.push( ...Vec.cast( [ left,  1-bottom], [ right, 1-bottom ], [ left,  1-top ], [ right, 1-top ] ) );
+            this.texture_coords.push( ...Vec.cast( [ left,  1-bottom], [ right, 1-bottom ], [ left,  1-top ], [ right, 1-top ] ) );
         }
       this.copy_onto_graphics_card( gl, ["texture_coords"], false );
     }
