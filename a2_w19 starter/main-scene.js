@@ -42,14 +42,14 @@ function Bezier(idx, p0, p1, p2, p3){
   
 }
 
-class Assignment_Two_Skeleton extends Scene_Component {    
+class Movement extends Scene_Component {    
     // The scene begins by requesting the camera, shapes, and materials it will need.
     constructor(context, control_box) {
         super(context, control_box);
 
         // First, include a secondary Scene that provides movement controls:
-        if(!context.globals.has_controls)
-            context.register_scene_component(new Movement_Controls(context, control_box.parentElement.insertCell()));
+        /*if(!context.globals.has_controls)
+            context.register_scene_component(new Movement_Controls(context, control_box.parentElement.insertCell()));*/
 
         // Locate the camera here (inverted matrix).
         const r = context.width / context.height;
@@ -872,4 +872,4 @@ class Assignment_Two_Skeleton extends Scene_Component {
     }
 }
 
-window.Assignment_Two_Skeleton = window.classes.Assignment_Two_Skeleton = Assignment_Two_Skeleton;
+window.Movement = window.classes.Movement = Movement;
