@@ -191,8 +191,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             tree_stump1: { x: 40, y: -16, margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
             tree_stump2: { x: 40, y: 0,  margin_x: 2, margin_y: 2, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
 
-            tower1:    { x: 10, y: 40, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
-            tower2:    { x: -10,y: 40, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            tower1:    { x: 10, y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
+            tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1},
 
             pointyboi: { x: -14, y: -16, margin_x: 3, margin_y: 3, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 1}
 
@@ -205,8 +205,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
             upper_wall:  { x: 0,   y: 48,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
             lower_wall:  { x: 0,   y: -48, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
 
-            tower1:      { x: 10,   y: 40,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
-            tower2:      { x: -10,  y: 40,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            tower1:    { x: 10, y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
+            tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
 
             box01:       { x: 0,   y: -8,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box02:       { x: -10, y: 14,   margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
@@ -216,30 +216,30 @@ class Assignment_Two_Skeleton extends Scene_Component {
             box06:       { x: -24, y: -2,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
 //            box07:       { x: -2, y: -2,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box08:       { x: -36 + 8*Math.sin(1.5*t),
-                                   y: 10,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: 10,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box09:       { x: -36 + 8*Math.sin(1.5*t + 0.2),
-                                   y: 6,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: 6,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box10:       { x: -36 + 8*Math.sin(1.5*t + 0.4),
-                                   y: 2,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: 2,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box11:       { x: -36 + 8*Math.sin(1.5*t + 0.6),
-                                   y: -2,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: -2,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box12:       { x: -36 + 8*Math.sin(1.5*t + 0.8),
-                                   y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box13:       { x: -36 + 8*Math.sin(1.5*t + 1),
-                                   y: -10,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: -10,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box14:       { x: -36 + 8*Math.sin(1.5*t + 1.2),
-                                   y: -14,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: -14,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box15:       { x: -36 + 8*Math.sin(1.5*t + 1.4),
-                                   y: -18,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: -18,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box16:       { x: -36 + 8*Math.sin(1.5*t + 1.6),
-                                   y: -22, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
+                                   y: -22, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
             box17:       { x: -38, y: 28 + 8*Math.cos(1.5*t + 1.8),
-                                           margin_x: 12, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
+                                           margin_x: 12, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 18, draw: 1},
             box18:       { x: -2,  y: -38, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box19:       { x: -24, y: -36 + 6*Math.cos(1.5*t),
-                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
+                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 5, draw: 1},
             box20:       { x: 22 , y: -36 - 6*Math.cos(1.5*t),
-                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
+                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 5, draw: 1},
             box21:       { x: 32,  y: -20, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box22:       { x: 40,  y: -8 , margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
             box23:       { x: 32,  y: 4,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
@@ -257,54 +257,96 @@ class Assignment_Two_Skeleton extends Scene_Component {
             upper_wall:  { x: 0,   y: 48,  margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
             lower_wall:  { x: 0,   y: -48, margin_x: 50, margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
 
-            tower1:      { x: 10,   y: 40,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
-            tower2:      { x: -10,  y: 40,  margin_x: 3,  margin_y: 3,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0},
+            tower1:    { x: 10, y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
+            tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
 
-            box01:       { x: 0,   y: -8,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box02:       { x: -10,  y: 14,   margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box03:       { x: 6,   y: 8,   margin_x: 14, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box04:       { x: 22,  y: 2,   margin_x: 2,  margin_y: 28, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box05:       { x: 0,   y: -24, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box06:       { x: -24, y: -2,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box07:       { x: -24, y: -2,  margin_x: 2,  margin_y: 24, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box08:       { x: -36 + 12*Math.sin(1.5*t),
-                                   y: 10,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box09:       { x: -36 + 12*Math.sin(1.5*t + 0.2),
-                                   y: 6,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box10:       { x: -36 + 12*Math.sin(1.5*t + 0.4),
-                                   y: 2,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box11:       { x: -36 + 12*Math.sin(1.5*t + 0.6),
-                                   y: -2,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box12:       { x: -36 + 12*Math.sin(1.5*t + 0.8),
-                                   y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box13:       { x: -36 + 12*Math.sin(1.5*t + 1),
-                                   y: -10,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box14:       { x: -36 + 12*Math.sin(1.5*t + 1.2),
-                                   y: -14,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box15:       { x: -36 + 12*Math.sin(1.5*t + 1.4),
-                                   y: -18,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box16:       { x: -36 + 6*Math.sin(1.5*t + 1.6),
-                                   y: -22, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 18*Math.cos(1.5*t), velocity_y: 0, draw: 1},
-            box17:       { x: -38, y: 28 + 8*Math.cos(1.5*t + 1.8),
-                                           margin_x: 12, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
-            box18:       { x: -2,  y: -38, margin_x: 24, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box19:       { x: -24, y: -36 + 6*Math.cos(1.5*t),
-                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
-            box20:       { x: 22 , y: -36 - 6*Math.cos(1.5*t),
-                                           margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 18*Math.cos(1.5*t), draw: 1},
-            box21:       { x: 32,  y: -20, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box22:       { x: 40,  y: -8 , margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box23:       { x: 32,  y: 4,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box24:       { x: 40,  y: 16,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box25:       { x: 32,  y: 28,  margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box26:       { x: 10,   y: 28,  margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
-            box27:       { x: 36,  y: -36, margin_x: 4 + 2*Math.sin(t),  margin_y: 4 + 2*Math.sin(t), 
-                                                                       rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+
+            box01:       { x: 0,   y: 8,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box02:       { x: 10,   y: -16,  margin_x: 2,  margin_y: 26, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box03:       { x: -10,  y: -20, margin_x: 2,  margin_y: 30, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box04:       { x: 0 + 10*Math.sin(1*t),
+                                   y: -12,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box05:       { x: 0 + 10*Math.sin(1*t + Math.PI),
+                                   y: -18,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box06:       { x: 0 + 10*Math.sin(1*t),
+                                   y: -24, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box07:       { x: 0 + 10*Math.sin(1*t + Math.PI),
+                                   y: -30, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box08:       { x: 0 + 10*Math.sin(1*t),
+                                   y: -36, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box09:       { x: 30,  y: -32, margin_x: 2,  margin_y: 6,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box10:       { x: 30,  y: -10, margin_x: 2,  margin_y: 7,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box11:       { x: 30,  y: 16,  margin_x: 2,  margin_y: 8,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box12:       { x: 20,  y: -40, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box13:       { x: 20,  y: -40 + 8*(t % 6), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box14:       { x: 20,  y: -40 + 8*((t + 4) % 6), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box15:       { x: 20,  y: -40 + 8*((t + 8) % 6), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box16:       { x: 20,  y: 8,   margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box17:       { x: 40,  y: -10, margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box18:       { x: 40,  y: -48 + 8*((t + 2.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box19:       { x: 40,  y: -48 + 8*((t + 4.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box20:       { x: 40,  y: -48 + 8*((t + 6.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box21:       { x: 40,  y: -48 + 8*((t + 8.5) % 9), 
+                                           margin_x: 8,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 4, draw: 1},
+            box22:       { x: 16,   y: 36, margin_x: 2,  margin_y: 14, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box23:       { x: -2,  y: 20,  margin_x: 20, margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box24:       { x: -24, y: -8,  margin_x: 2,  margin_y: 30, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 1},
+            box25:       { x: -17, y: 20 - 10*((t + 4) % 6),
+                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 5, draw: 1},
+            box26:       { x: -17,y: 20 - 10*((t + 6) % 6),
+                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 5, draw: 1},
+            box27:       { x: -17,y: 20 - 10*((t + 8) % 6),
+                                           margin_x: 4,  margin_y: 2,  rotation: 0, velocity_x: 0, velocity_y: 5, draw: 1},
+
+            box28:       { x: -36 + 8*Math.sin(2.5*t),
+                                   y: 10,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box29:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 1),
+                                   y: 6,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box30:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 2),
+                                   y: 2,   margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box31:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 3),
+                                   y: -2,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box32:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 4),
+                                   y: -6,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box33:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 5),
+                                   y: -10,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box34:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 6),
+                                   y: -14,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box35:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 7),
+                                   y: -18,  margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box36:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 8),
+                                   y: -22, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box37:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 9),
+                                   y: -26, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box38:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 10),
+                                   y: -30, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box39:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * -1),
+                                   y: 14, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box40:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * -2),
+                                   y: 18, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box41:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * 11),
+                                   y: -34, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+            box42:       { x: -36 + 8*Math.sin(2.5*t + 0.4 * -3),
+                                   y: 22, margin_x: 2,  margin_y: 2,  rotation: 0, velocity_x: 5, velocity_y: 0, draw: 1},
+        },
+
+        // level 3 items
+        {
+            left_wall: { x: -49, y: 0, margin_x: 1, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
+            right_wall: { x: 49, y: 0, margin_x: 1, margin_y: 50, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
+            upper_wall: { x: 0,  y: 49,margin_x: 50,margin_y: 1,  rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
+            lower_wall: { x: 0,  y: -49,margin_x: 50,margin_y: 1, rotation: 0, velocity_x: 0, velocity_y: 0, draw: 0 },
+
+            tower1:    { x: 10, y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
+            tower2:    { x: -10,y: 42, margin_x: 4, margin_y: 4, rotation: 0, velocity_x: 0, velocity_y: 0,  draw: 0},
+
         }
-
-
-
-
          ];
 
 //       console.log("x: ", this.x_coord, "y: ", this.y_coord);
@@ -317,10 +359,10 @@ class Assignment_Two_Skeleton extends Scene_Component {
 
         for(var obj in object_coords[this.game_level])
         {
-            if  ((this.x_coord*2 > (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x/2 - 0.1)
-              && (this.x_coord*2 < (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x/2 + 0.1))
-              && (this.y_coord*2 > (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y/2 - 0.1))
-              && (this.y_coord*2 < (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y/2 + 0.1)))
+            if  ((this.x_coord*2 > (object_coords[this.game_level][obj].x - object_coords[this.game_level][obj].margin_x - 0.1)
+              && (this.x_coord*2 < (object_coords[this.game_level][obj].x + object_coords[this.game_level][obj].margin_x + 0.1))
+              && (this.y_coord*2 > (object_coords[this.game_level][obj].y - object_coords[this.game_level][obj].margin_y - 0.1))
+              && (this.y_coord*2 < (object_coords[this.game_level][obj].y + object_coords[this.game_level][obj].margin_y + 0.1)))
               || (this.x_coord*2 > 49 || this.x_coord*2 < -49 || this.y_coord*2 > 49 || this.y_coord*2 < -49))
               this.y_coord = this.x_coord = this.y_vel = this.x_vel = 0;
         }
@@ -493,7 +535,7 @@ class Assignment_Two_Skeleton extends Scene_Component {
         {
             this.game_level += 1;
             this.x_coord = this.y_coord = this.x_vel = this.y_vel = this.x_acc = this.y_acc = 0;
-            if (this.game_level == 3) this.game_level = 0;
+            if (this.game_level == 4) this.game_level = 0;
         }
 
         graphics_state.camera_transform = Mat4.look_at(Vec.of(this.x_coord, this.y_coord - 70, this.z_coord + 70), Vec.of(this.x_coord, this.y_coord, this.z_coord), Vec.of(0, 0, 1));
