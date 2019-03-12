@@ -26,6 +26,8 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.y_acc = 0;
         this.z_acc = 0;
         
+        this.phi = 0;
+        
         // Does the user have control over movement in this axis?
         // They may not if the ball interacts with a spring, wall, etc.
         this.x_ctrl = 0;
@@ -462,6 +464,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         // Velocity
         this.x_coord += this.x_vel * delta_time;
         this.y_coord += this.y_vel * delta_time;
+        
+        this.my_cross = Vec.of(0, 0, 1).cross(Vec.of(this.x_vel, this.y_vel, 0));
+        this.phi += Math.sqrt(Math.pow(this.x_vel * delta_time, 2) + Math.pow(this.y_vel * delta_time, 2)) / 2;
 
         // Draw the basic map scene centered at the origin
         // The plane of the board faces the positive Z direction
@@ -494,8 +499,9 @@ class Assignment_Two_Skeleton extends Scene_Component {
         this.shapes.ball.draw(graphics_state, 
                 Mat4.identity()
                     .times(Mat4.scale(2))
-                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord))),
-                    this.plastic.override({color: this.lightgrey}));
+                    .times(Mat4.translation(Vec.of(this.x_coord, this.y_coord, this.z_coord)))
+                    .times(Mat4.rotation(this.phi, this.my_cross)),
+                    this.shape_materials.ball || this.plastic.override({color: this.lightgrey}));
 
         // Only draw certain objects depending on the game level
         if (this.game_level == 0)
